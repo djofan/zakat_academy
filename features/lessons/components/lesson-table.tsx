@@ -3,10 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Trash2, ArrowUp, ArrowDown, Plus } from "lucide-react";
+import { ArrowUp, ArrowDown, Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { DataTable } from "@/components/shared/data-table";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label";
 import { deleteLesson, reorderLesson } from "@/features/lessons/actions";
 import { toast } from "sonner";
 import { LessonForm } from "./lesson-form";
+import { MoreHorizontal } from "lucide-react";
 
 export type LessonRow = {
   id: string;
@@ -82,17 +83,14 @@ export function LessonTable({
   const router = useRouter();
   const [lessons, setLessons] = useState(initialLessons);
   const [filterModule, setFilterModule] = useState<string>("all");
-  const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editLesson, setEditLesson] = useState<LessonRow | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<LessonRow | null>(null);
   const [deletePending, startDelete] = useTransition();
 
-  const filtered = lessons.filter((l) => {
-    const matchModule = filterModule === "all" || l.moduleId === filterModule;
-    const matchSearch = l.title.toLowerCase().includes(search.toLowerCase());
-    return matchModule && matchSearch;
-  });
+  const filtered = lessons.filter(
+    (l) => filterModule === "all" || l.moduleId === filterModule
+  );
 
   function handleEdit(row: LessonRow) {
     setEditLesson(row);
@@ -204,12 +202,6 @@ export function LessonTable({
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Input
-          placeholder="Cari lesson..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-[240px]"
-        />
         <div className="flex items-center gap-2">
           <Label className="text-sm text-muted-foreground">Modul:</Label>
           <Select value={filterModule} onValueChange={setFilterModule}>
@@ -233,85 +225,7 @@ export function LessonTable({
         </div>
       </div>
 
-      <div className="rounded-md border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50">
-            <tr>
-              {columns.map((col) => (
-                <th key={col.id ?? (col as any).accessorKey} className="px-3 py-2.5 text-left font-medium">
-                  {"header" in col ? String(col.header) : ""}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-muted-foreground">
-                  Tidak ada lesson ditemukan.
-                </td>
-              </tr>
-            ) : (
-              filtered.map((row) => (
-                <tr key={row.id} className="border-t hover:bg-muted/30">
-                  {columns.map((col) => {
-                    const id = col.id ?? String((col as any).accessorKey);
-                    return (
-                      <td key={id} className="px-3 py-2.5">
-                        {id === "actions" ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                              <DropdownMenuItem onSelect={() => handleReorder(row.id, "up")}>
-                                <ArrowUp className="mr-2 h-4 w-4" /> Geser Naik
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onSelect={() => handleReorder(row.id, "down")}>
-                                <ArrowDown className="mr-2 h-4 w-4" /> Geser Turun
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onSelect={() => handleEdit(row)}>
-                                <Pencil className="mr-2 h-4 w-4" /> Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
-                                onSelect={() => handleDelete(row)}
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" /> Hapus
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : col.id === "title" ? (
-                          <div>
-                            <p className="font-medium">{row.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {row.module.program.title} &rsaquo; {row.module.title}
-                            </p>
-                          </div>
-                        ) : col.id === "videoProvider" ? (
-                          <Badge className={cn(providerColors[row.videoProvider])}>
-                            {providerLabels[row.videoProvider]}
-                          </Badge>
-                        ) : col.id === "isPublished" ? (
-                          <Badge variant={row.isPublished ? "default" : "secondary"}>
-                            {row.isPublished ? "Published" : "Draft"}
-                          </Badge>
-                        ) : col.id === "order" ? (
-                          <span className="tabular-nums font-medium">{row.order}</span>
-                        ) : null}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <DataTable columns={columns} data={filtered} searchKey="title" searchPlaceholder="Cari lesson..." />
 
       <AlertDialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
         <AlertDialogContent>

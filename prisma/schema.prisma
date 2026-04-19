@@ -165,12 +165,13 @@ model QuizOption {
 }
 
 model QuizAttempt {
-  id         String    @id @default(cuid())
-  userId     String
-  quizId     String
-  score      Int
-  passed     Boolean
-  createdAt  DateTime  @default(now())
+  id       String   @id @default(cuid())
+  userId   String
+  quizId   String
+  score    Int
+  passed   Boolean
+  answers  Json     @default("{}")
+  createdAt DateTime @default(now())
 
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   quiz       Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)

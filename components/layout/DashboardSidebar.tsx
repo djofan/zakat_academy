@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 import {
   BookOpen,
   LayoutDashboard,
   GraduationCap,
   BarChart3,
   LogOut,
-  X,
+  Menu,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
 
 interface DashboardSidebarProps {
@@ -25,7 +27,13 @@ const navItems = [
   { href: "/my-progress", label: "Kemajuan Saya", icon: BarChart3 },
 ];
 
-export function DashboardSidebar({ session }: DashboardSidebarProps) {
+function SidebarContent({
+  session,
+  onNavClick,
+}: {
+  session: Session;
+  onNavClick?: () => void;
+}) {
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -34,7 +42,7 @@ export function DashboardSidebar({ session }: DashboardSidebarProps) {
       : pathname.startsWith(href);
 
   return (
-    <aside className="hidden w-64 flex-col border-r bg-background md:flex">
+    <>
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <BookOpen className="h-5 w-5 text-primary" />
@@ -47,6 +55,7 @@ export function DashboardSidebar({ session }: DashboardSidebarProps) {
           <Link
             key={href}
             href={href}
+            onClick={onNavClick}
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               isActive(href)
@@ -62,12 +71,14 @@ export function DashboardSidebar({ session }: DashboardSidebarProps) {
 
       <div className="border-t p-4">
         <div className="mb-3 flex items-center gap-3 px-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{session.user?.name}</p>
-            <p className="truncate text-xs text-muted-foreground">{session.user?.email}</p>
+            <p className="truncate text-xs text-muted-foreground">
+              {session.user?.email}
+            </p>
           </div>
         </div>
         <Button
@@ -80,6 +91,42 @@ export function DashboardSidebar({ session }: DashboardSidebarProps) {
           Keluar
         </Button>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export function DashboardSidebar({ session }: DashboardSidebarProps) {
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 flex-col border-r bg-background md:flex">
+        <SidebarContent session={session} />
+      </aside>
+
+      {/* Mobile: Sheet + hamburger in header (header lives in layout) */}
+    </>
+  );
+}
+
+export function MobileHeader({ session }: DashboardSidebarProps) {
+  return (
+    <header className="flex h-14 items-center justify-between border-b bg-background px-4 md:hidden">
+      <Link href="/" className="flex items-center gap-2 font-semibold">
+        <BookOpen className="h-5 w-5 text-primary" />
+        <span>Zakat Academy</span>
+      </Link>
+
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-9 w-9">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Buka menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="flex w-64 flex-col p-0">
+          <SidebarContent session={session} />
+        </SheetContent>
+      </Sheet>
+    </header>
   );
 }

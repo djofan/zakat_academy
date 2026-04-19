@@ -3,10 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Trash2, ArrowUp, ArrowDown, Plus } from "lucide-react";
+import { ArrowUp, ArrowDown, Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { DataTable } from "@/components/shared/data-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +36,7 @@ import { Label } from "@/components/ui/label";
 import { deleteModule, reorderModule } from "@/features/modules/actions";
 import { toast } from "sonner";
 import { ModuleForm } from "./module-form";
+import { MoreHorizontal } from "lucide-react";
 
 export type ModuleRow = {
   id: string;
@@ -59,17 +60,12 @@ export function ModuleTable({
   const router = useRouter();
   const [modules, setModules] = useState(initialModules);
   const [filterProgram, setFilterProgram] = useState<string>("all");
-  const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editModule, setEditModule] = useState<ModuleRow | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ModuleRow | null>(null);
   const [deletePending, startDelete] = useTransition();
 
-  const filtered = modules.filter((m) => {
-    const matchProgram = filterProgram === "all" || m.programId === filterProgram;
-    const matchSearch = m.title.toLowerCase().includes(search.toLowerCase());
-    return matchProgram && matchSearch;
-  });
+  const filtered = modules.filter((m) => filterProgram === "all" || m.programId === filterProgram);
 
   function handleEdit(row: ModuleRow) {
     setEditModule(row);
@@ -143,7 +139,34 @@ export function ModuleTable({
     },
     {
       id: "actions",
-      cell: () => null,
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuItem onSelect={() => handleReorder(row.original.id, "up")}>
+              <ArrowUp className="mr-2 h-4 w-4" /> Geser Naik
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => handleReorder(row.original.id, "down")}>
+              <ArrowDown className="mr-2 h-4 w-4" /> Geser Turun
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => handleEdit(row.original)}>
+              <Pencil className="mr-2 h-4 w-4" /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={() => handleDelete(row.original)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Hapus
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
       enableSorting: false,
     },
   ];
@@ -151,12 +174,6 @@ export function ModuleTable({
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Input
-          placeholder="Cari modul..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-[220px]"
-        />
         <div className="flex items-center gap-2">
           <Label className="text-sm text-muted-foreground">Program:</Label>
           <Select value={filterProgram} onValueChange={setFilterProgram}>
@@ -178,74 +195,7 @@ export function ModuleTable({
         </div>
       </div>
 
-      <div className="rounded-md border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50">
-            <tr>
-              {columns.map((col) => (
-                <th key={col.id ?? (col as any).accessorKey} className="px-3 py-2.5 text-left font-medium">
-                  {"header" in col ? String(col.header) : ""}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-muted-foreground">
-                  Tidak ada modul ditemukan.
-                </td>
-              </tr>
-            ) : (
-              filtered.map((row) => (
-                <tr key={row.id} className="border-t hover:bg-muted/30">
-                  <td className="px-3 py-2.5"><span className="tabular-nums font-medium">{row.order}</span></td>
-                  <td className="px-3 py-2.5">
-                    <div>
-                      <p className="font-medium">{row.title}</p>
-                      <p className="text-xs text-muted-foreground">{row.program.title}</p>
-                    </div>
-                  </td>
-                  <td className="px-3 py-2.5"><span className="tabular-nums">{row._count.lessons}</span></td>
-                  <td className="px-3 py-2.5">
-                    <Badge variant={row.isPublished ? "default" : "secondary"}>
-                      {row.isPublished ? "Published" : "Draft"}
-                    </Badge>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                        <DropdownMenuItem onSelect={() => handleReorder(row.id, "up")}>
-                          <ArrowUp className="mr-2 h-4 w-4" /> Geser Naik
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleReorder(row.id, "down")}>
-                          <ArrowDown className="mr-2 h-4 w-4" /> Geser Turun
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onSelect={() => handleEdit(row)}>
-                          <Pencil className="mr-2 h-4 w-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          onSelect={() => handleDelete(row)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" /> Hapus
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <DataTable columns={columns} data={filtered} searchKey="title" searchPlaceholder="Cari modul..." />
 
       <AlertDialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
         <AlertDialogContent>

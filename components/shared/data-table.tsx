@@ -1,11 +1,8 @@
 "use client";
 
 import * as React from "react";
+import type { ColumnDef, SortingState } from "@tanstack/react-table";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -13,16 +10,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -37,13 +27,6 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey?: string;
   searchPlaceholder?: string;
-  pagination?: {
-    pageIndex?: number;
-    pageSize?: number;
-    pageCount?: number;
-    totalCount?: number;
-  };
-  onPaginationChange?: (page: number, pageSize: number) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -51,12 +34,8 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   searchPlaceholder = "Cari...",
-  pagination,
-  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
@@ -66,56 +45,41 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      globalFilter,
-    },
+    state: { sorting, globalFilter },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
-    initialState: {
-      pagination: {
-        pageSize: pagination?.pageSize ?? 10,
-        pageIndex: pagination?.pageIndex ?? 0,
-      },
-    },
+    initialState: { pagination: { pageSize: 10 } },
   });
 
-  const pageSize = table.getState().pagination.pageSize;
-  const pageIndex = table.getState().pagination.pageIndex;
+  const filteredCount = table.getFilteredRowModel().rows.length;
 
   return (
     <div className="space-y-4">
-      {searchKey && (
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={searchPlaceholder}
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="pl-9"
-            />
-          </div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="relative max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={searchPlaceholder}
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="pl-9"
+          />
         </div>
-      )}
+        <span className="text-sm text-muted-foreground">
+          {filteredCount} dari {data.length} data
+        </span>
+      </div>
 
-      <div className="rounded-lg border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => (
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -124,11 +88,8 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Tidak ada data.
+                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                  Tidak ada data
                 </TableCell>
               </TableRow>
             ) : (
@@ -146,63 +107,23 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          {pagination?.totalCount !== undefined && (
-            <span>
-              Menampilkan{" "}
-              {pageIndex * pageSize + 1}–
-              {Math.min((pageIndex + 1) * pageSize, pagination.totalCount)} dari{" "}
-              {pagination.totalCount}
-            </span>
-          )}
-        </div>
-
+        <span className="text-sm text-muted-foreground">
+          Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
+        </span>
         <div className="flex items-center gap-2">
-          <Select
-            value={String(pageSize)}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-              onPaginationChange?.(0, Number(value));
-            }}
-          >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {[10, 20, 50, 100].map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <span className="text-sm text-muted-foreground">
-            Halaman {pageIndex + 1} dari {table.getPageCount() || 1}
-          </span>
-
           <Button
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => {
-              table.previousPage();
-              onPaginationChange?.(pageIndex - 1, pageSize);
-            }}
+            size="sm"
+            onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => {
-              table.nextPage();
-              onPaginationChange?.(pageIndex + 1, pageSize);
-            }}
+            size="sm"
+            onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRight className="h-4 w-4" />
@@ -210,25 +131,5 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
     </div>
-  );
-}
-
-export function SortableHeader({
-  column,
-  children,
-}: {
-  column: { getIsSorted: () => false | "asc" | "desc"; toggleSorting: (desc?: boolean) => void };
-  children: React.ReactNode;
-}) {
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="-ml-3 h-8"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    >
-      {children}
-      <ArrowUpDown className="ml-2 h-4 w-4" />
-    </Button>
   );
 }

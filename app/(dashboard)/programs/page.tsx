@@ -31,7 +31,7 @@ export default async function ProgramsPage() {
   const enrolledIds = new Set(enrollments.map((e) => e.programId));
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Program Pembelajaran</h1>
         <p className="text-muted-foreground">

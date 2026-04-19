@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { BookOpen, LayoutDashboard, LogOut, Settings, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { BookOpen, LayoutDashboard, LogOut, Menu, Settings, Users } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
 
 interface AdminSidebarProps {
@@ -19,11 +21,17 @@ const navItems = [
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },
 ];
 
-export function AdminSidebar({ session }: AdminSidebarProps) {
+function SidebarContent({
+  session,
+  onNavClick,
+}: {
+  session: Session;
+  onNavClick?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 flex-col border-r bg-background md:flex">
+    <>
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <BookOpen className="h-5 w-5 text-primary" />
@@ -45,6 +53,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
             <Link
               key={href}
               href={href}
+              onClick={onNavClick}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 active
@@ -61,7 +70,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
 
       <div className="border-t p-4">
         <div className="mb-3 flex items-center gap-3 px-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {session.user?.name?.charAt(0).toUpperCase() ?? "A"}
           </div>
           <div className="min-w-0 flex-1">
@@ -79,6 +88,40 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
           Keluar
         </Button>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export function AdminSidebar({ session }: AdminSidebarProps) {
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 flex-col border-r bg-background md:flex">
+        <SidebarContent session={session} />
+      </aside>
+    </>
+  );
+}
+
+export function AdminMobileHeader({ session }: AdminSidebarProps) {
+  return (
+    <header className="flex h-14 items-center justify-between border-b bg-background px-4 md:hidden">
+      <Link href="/admin" className="flex items-center gap-2 font-semibold">
+        <BookOpen className="h-5 w-5 text-primary" />
+        <span>Admin</span>
+      </Link>
+
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-9 w-9">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Buka menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="flex w-64 flex-col p-0">
+          <SidebarContent session={session} />
+        </SheetContent>
+      </Sheet>
+    </header>
   );
 }

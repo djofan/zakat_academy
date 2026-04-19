@@ -60,7 +60,7 @@ export default async function StudentDashboardPage() {
   ];
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Selamat Datang, {session?.user?.name}!</h1>
         <p className="text-muted-foreground">Lanjutkan perjalanan belajar Anda.</p>

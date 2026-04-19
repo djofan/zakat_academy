@@ -8,7 +8,14 @@
       "Bash(grep -v \"^$\")",
       "Bash(npx tsc *)",
       "Bash(node -e \"console.log\\(require\\('typescript/package.json'\\).version\\)\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(npx prisma *)",
+      "Bash(npm install *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(rm \"app/\\(main\\)/programs/[slug]/page.tsx\")",
+      "Bash(rmdir \"app/\\(main\\)/programs/[slug]\")",
+      "Bash(rm \"C:/Users/a/zakat-academy/app/\\(main\\)/programs/[slug]/page.tsx\")",
+      "Bash(rmdir \"C:/Users/a/zakat-academy/app/\\(main\\)/programs/[slug]\")"
     ]
   }
 }

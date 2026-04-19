@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
+import { DashboardSidebar, MobileHeader } from "@/components/layout/DashboardSidebar";
 
 export default async function DashboardLayout({
   children,
@@ -17,9 +17,12 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-screen">
       <DashboardSidebar session={session} />
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <div className="flex flex-1 flex-col">
+        <MobileHeader session={session} />
+        <main className="flex-1 overflow-auto p-4 md:p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

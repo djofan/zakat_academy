@@ -20,13 +20,13 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground">Ringkasan sistem Zakat Academy.</p>
       </div>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-primary/10 p-3">

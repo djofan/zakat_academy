@@ -18,7 +18,7 @@ export default async function AdminUsersPage() {
   });
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Pengguna</h1>
         <p className="text-muted-foreground">Kelola pengguna sistem.</p>

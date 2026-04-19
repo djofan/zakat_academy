@@ -3,12 +3,11 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, BookOpen, Video, Lock, ChevronRight } from "lucide-react";
+import { CheckCircle, BookOpen, Video, Lock, ChevronRight, FileQuestion } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 export default async function ProgramDetailPage({
   params,
@@ -25,6 +24,11 @@ export default async function ProgramDetailPage({
         include: {
           lessons: {
             orderBy: { order: "asc" },
+          },
+          quizzes: {
+            where: { isPublished: true },
+            orderBy: { createdAt: "asc" },
+            select: { id: true, title: true },
           },
         },
       },
@@ -43,16 +47,25 @@ export default async function ProgramDetailPage({
   });
 
   const lessonIds = program.modules.flatMap((m) => m.lessons.map((l) => l.id));
-  const lessonProgress = await db.lessonProgress.findMany({
-    where: {
-      userId: session!.user.id,
-      lessonId: { in: lessonIds },
-      completed: true,
-    },
-    select: { lessonId: true },
-  });
+  const quizIds = program.modules.flatMap((m) => m.quizzes.map((q) => q.id));
+
+  const [lessonProgress, quizAttempts] = await Promise.all([
+    db.lessonProgress.findMany({
+      where: {
+        userId: session!.user.id,
+        lessonId: { in: lessonIds },
+        completed: true,
+      },
+      select: { lessonId: true },
+    }),
+    db.quizAttempt.findMany({
+      where: { userId: session!.user.id, quizId: { in: quizIds } },
+      select: { quizId: true, score: true, passed: true },
+    }),
+  ]);
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
+  const passedQuizIds = new Set(quizAttempts.filter((a) => a.passed).map((a) => a.quizId));
 
   const totalLessons = program.modules.reduce((s, m) => s + m.lessons.length, 0);
   const completedCount = program.modules.reduce(
@@ -186,6 +199,36 @@ export default async function ProgramDetailPage({
                           <Button size="sm" variant="ghost" className="h-7 gap-1" asChild>
                             <Link href={`/programs/${params.slug}/${lesson.slug}`}>
                               {isDone ? "Ulangi" : "Mulai"}
+                              <ChevronRight className="h-3 w-3" />
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {module.quizzes.map((quiz) => {
+                    const passed = passedQuizIds.has(quiz.id);
+                    return (
+                      <div
+                        key={quiz.id}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm"
+                      >
+                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+                          {passed ? (
+                            <CheckCircle className="h-4 w-4 text-purple-600" />
+                          ) : (
+                            <FileQuestion className="h-4 w-4 text-purple-600" />
+                          )}
+                        </div>
+                        <span className={cn("flex-1", passed && "text-muted-foreground")}>
+                          {quiz.title}
+                        </span>
+                        {passed ? (
+                          <Badge variant="secondary" className="text-xs">Lulus</Badge>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="h-7 gap-1" asChild>
+                            <Link href={`/quiz/${quiz.id}`}>
+                              Ikuti Kuis
                               <ChevronRight className="h-3 w-3" />
                             </Link>
                           </Button>

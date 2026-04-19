@@ -41,6 +41,7 @@ export function AdminProgramsClient({ initialPrograms }: AdminProgramsClientProp
       <DataTable
         columns={columns}
         data={initialPrograms}
+        searchKey="title"
         searchPlaceholder="Cari program..."
       />
 
