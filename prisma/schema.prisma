@@ -19,13 +19,22 @@ enum VideoProvider {
   BUNNY
 }
 
+enum Gender {
+  IKHWAN
+  AKHWAT
+}
+
 model User {
   id                String             @id @default(cuid())
   name              String?
-  email             String             @unique
+  email             String?            @unique
+  no_hp             String?            @unique
   passwordHash      String
   role              Role               @default(STUDENT)
   image             String?
+  nis               String?            @unique
+  gender            String?            
+  certificateUrl    String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
@@ -130,14 +139,18 @@ model LessonProgress {
 }
 
 model Quiz {
-  id           String          @id @default(cuid())
-  moduleId     String
-  title        String
-  description  String?
-  passingScore Int             @default(70)
-  isPublished  Boolean         @default(false)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id               String          @id @default(cuid())
+  moduleId         String
+  title            String
+  description      String?
+  passingScore     Int             @default(70)
+  isPublished      Boolean         @default(false)
+  isActive         Boolean         @default(false)
+  quizDate         DateTime?
+  timeLimitMinutes Int             @default(10)
+  allowRetake      Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   module       Module          @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   questions    QuizQuestion[]
@@ -165,16 +178,21 @@ model QuizOption {
 }
 
 model QuizAttempt {
-  id       String   @id @default(cuid())
-  userId   String
-  quizId   String
-  score    Int
-  passed   Boolean
-  answers  Json     @default("{}")
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Int?
+  passed      Boolean?
+  answers     Json      @default("{}")
+  startedAt   DateTime  @default(now())
+  submittedAt DateTime?
+  isCompleted Boolean   @default(false)
+  createdAt   DateTime  @default(now())
 
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   quiz       Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quizId])
 }
 
 model CompletionRecord {

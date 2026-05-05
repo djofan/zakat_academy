@@ -101,7 +101,7 @@ export function ModuleForm({ module, programs, open, onOpenChange }: ModuleFormP
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 pl-2">
           {/* Program */}
           <div className="space-y-1.5">
             <Label>Program *</Label>

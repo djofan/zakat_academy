@@ -25,3 +25,11 @@ export const VideoProvider = {
 } as const
 
 export type VideoProvider = (typeof VideoProvider)[keyof typeof VideoProvider]
+
+
+export const Gender = {
+  IKHWAN: 'IKHWAN',
+  AKHWAT: 'AKHWAT'
+} as const
+
+export type Gender = (typeof Gender)[keyof typeof Gender]

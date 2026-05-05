@@ -1,6 +1,6 @@
 "use client";
 
-import type { Control, UseFormRegister, FieldErrors } from "react-hook-form";
+import type { Control, UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 import type { QuizFormValues } from "../schemas";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ interface QuestionEditorProps {
   questionIndex: number;
   control: Control<QuizFormValues>;
   register: UseFormRegister<QuizFormValues>;
+  setValue: UseFormSetValue<QuizFormValues>;
+  watch: UseFormWatch<QuizFormValues>;
   errors: FieldErrors<QuizFormValues>;
   onRemove: () => void;
 }
@@ -21,6 +23,8 @@ export function QuestionEditor({
   questionIndex,
   control,
   register,
+  setValue,
+  watch,
   errors,
   onRemove,
 }: QuestionEditorProps) {
@@ -36,22 +40,8 @@ export function QuestionEditor({
   }
 
   function setCorrectOption(optionIndex: number) {
-    const totalOptions = fields.length;
-    for (let i = 0; i < totalOptions; i++) {
-      const el = document.getElementById(
-        `questions.${questionIndex}.options.${i}.isCorrect`
-      ) as HTMLInputElement | null;
-      if (el) {
-        el.checked = i === optionIndex;
-      }
-    }
-    const allFields = document.querySelectorAll<HTMLInputElement>(
-      `input[name^="questions.${questionIndex}.options"]`
-    );
-    allFields.forEach((el, i) => {
-      if (el.dataset.correct === "true") {
-        el.click();
-      }
+    fields.forEach((_, i) => {
+      setValue(`questions.${questionIndex}.options.${i}.isCorrect`, i === optionIndex);
     });
   }
 
@@ -97,18 +87,10 @@ export function QuestionEditor({
               <input
                 type="radio"
                 id={`questions.${questionIndex}.options.${optionIndex}.isCorrect`}
-                {...register(`questions.${questionIndex}.options.${optionIndex}.isCorrect`)}
+                name={`questions.${questionIndex}.correctAnswer`}
+                checked={watch(`questions.${questionIndex}.options.${optionIndex}.isCorrect`) || false}
+                onChange={() => setCorrectOption(optionIndex)}
                 className="h-4 w-4 accent-primary"
-                onChange={() => {
-                  fields.forEach((_, i) => {
-                    if (i !== optionIndex) {
-                      const el = document.getElementById(
-                        `questions.${questionIndex}.options.${i}.isCorrect`
-                      ) as HTMLInputElement | null;
-                      if (el) el.checked = false;
-                    }
-                  });
-                }}
               />
               <Input
                 placeholder={`Pilihan ${optionIndex + 1}`}

@@ -130,7 +130,7 @@ export function ProgramForm({
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 pl-2">
           {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="title">Judul Program *</Label>
@@ -189,20 +189,15 @@ export function ProgramForm({
           </div>
 
           {/* Description */}
-          <div className="space-y-1.5">
-            <Label htmlFor="description">Deskripsi Lengkap</Label>
-            <Textarea
-              id="description"
-              placeholder="Deskripsi detail program..."
-              rows={4}
-              value={descriptionValue}
-              onChange={(e) => {
-                form.register("description").onChange(e);
-                setDescriptionValue(e.target.value);
-              }}
-              onBlur={(e) => form.register("description").onBlur(e)}
-            />
-          </div>
+<div className="space-y-1.5">
+  <Label htmlFor="description">Deskripsi Lengkap</Label>
+  <Textarea
+    id="description"
+    placeholder="Deskripsi detail program..."
+    rows={4}
+    {...form.register("description")}
+  />
+</div>
 
           {/* Thumbnail URL */}
           <div className="space-y-1.5">

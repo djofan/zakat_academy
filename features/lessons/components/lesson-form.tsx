@@ -193,7 +193,7 @@ export function LessonForm({ lesson, modules, open, onOpenChange }: LessonFormPr
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 pl-2">
           {/* Module */}
           <div className="space-y-1.5">
             <Label>Modul *</Label>

@@ -1,0 +1,196 @@
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\APP
+|   favicon.ico
+|   globals.css
+|   layout.tsx
+|   
++---(admin)
+|   |   layout.tsx
+|   |   
+|   \---admin
+|       |   page.tsx
+|       |   
+|       +---lessons
+|       |       page.tsx
+|       |       
+|       +---modules
+|       |       loading.tsx
+|       |       page.tsx
+|       |       
+|       +---programs
+|       |       page.tsx
+|       |       programs-client.tsx
+|       |       
+|       +---quizzes
+|       |       page.tsx
+|       |       
+|       +---settings
+|       |       page.tsx
+|       |       
+|       \---users
+|               page.tsx
+|               
++---(auth)
+|   |   layout.tsx
+|   |   
+|   +---login
+|   |       page.tsx
+|   |       
+|   \---register
+|           page.tsx
+|           
++---(dashboard)
+|   |   layout.tsx
+|   |   
+|   +---dashboard
+|   |       page.tsx
+|   |       
+|   +---my-progress
+|   |       page.tsx
+|   |       
+|   +---programs
+|   |   |   page.tsx
+|   |   |   
+|   |   \---[slug]
+|   |       |   page.tsx
+|   |       |   
+|   |       \---[lessonSlug]
+|   |               page.tsx
+|   |               
+|   \---quiz
+|       \---[quizId]
+|           |   page.tsx
+|           |   
+|           \---result
+|               \---[attemptId]
+|                       page.tsx
+|                       
++---(main)
+|       layout.tsx
+|       page.tsx
+|       
+\---api
+    +---auth
+    |   +---register
+    |   |       route.ts
+    |   |       
+    |   \---[...nextauth]
+    |           route.ts
+    |           
+    +---progress
+    |       route.ts
+    |       
+    \---uploadthing
+            route.ts
+            
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\COMPONENTS
++---auth
+|       LoginForm.tsx
+|       RegisterForm.tsx
+|       
++---landing
+|       features-section.tsx
+|       footer.tsx
+|       hero-section.tsx
+|       navbar.tsx
+|       programs-section.tsx
+|       stats-section.tsx
+|       
++---layout
+|       AdminSidebar.tsx
+|       DashboardSidebar.tsx
+|       Footer.tsx
+|       Navbar.tsx
+|       
++---programs
+|       MarkCompleteButton.tsx
+|       
++---providers
+|       SessionProvider.tsx
+|       
++---shared
+|       data-table-column-header.tsx
+|       data-table-row-actions.tsx
+|       data-table.tsx
+|       password-input.tsx
+|       skeleton-table.tsx
+|       video-player.tsx
+|       
+\---ui
+        alert-dialog.tsx
+        badge.tsx
+        button.tsx
+        card.tsx
+        dialog.tsx
+        dropdown-menu.tsx
+        input.tsx
+        label.tsx
+        progress.tsx
+        radio-group.tsx
+        select.tsx
+        separator.tsx
+        sheet.tsx
+        skeleton.tsx
+        switch.tsx
+        table.tsx
+        tabs.tsx
+        textarea.tsx
+        
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\LIB
+|   auth.ts
+|   db.ts
+|   slugify.ts
+|   uploadthing.ts
+|   utils.ts
+|   
+\---validators
+        auth.ts
+        register.ts
+        
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\PRISMA
+|   schema.prisma
+|   seed.ts
+|   
+\---migrations
+    |   migration_lock.toml
+    |   
+    \---20260416050259_init
+            migration.sql
+            
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\SRC
+\---generated
+    \---prisma
+        |   browser.ts
+        |   client.ts
+        |   commonInputTypes.ts
+        |   enums.ts
+        |   models.ts
+        |   
+        +---internal
+        |       class.ts
+        |       prismaNamespace.ts
+        |       prismaNamespaceBrowser.ts
+        |       
+        \---models
+                CompletionRecord.ts
+                Enrollment.ts
+                Lesson.ts
+                LessonAttachment.ts
+                LessonProgress.ts
+                Module.ts
+                Program.ts
+                Quiz.ts
+                QuizAttempt.ts
+                QuizOption.ts
+                QuizQuestion.ts
+                User.ts
+                

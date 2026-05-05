@@ -51,7 +51,7 @@ export function HeroSection() {
           className="flex flex-col gap-3 sm:flex-row sm:justify-center"
         >
           <Button size="lg" asChild>
-            <Link href="/register">Mulai Belajar Gratis</Link>
+            <a href="/login" rel="noopener noreferrer">Masuk</a>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <a href="#programs">Lihat Program</a>

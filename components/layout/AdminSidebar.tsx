@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
-import { BookOpen, LayoutDashboard, LogOut, Menu, Settings, Users } from "lucide-react";
+import { BookOpen, FileQuestion, LayoutDashboard, Layers, LogOut, Menu, Settings, Users, Video } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,8 +15,11 @@ interface AdminSidebarProps {
 }
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/programs", label: "Program", icon: BookOpen },
+  { href: "/admin/modules", label: "Modul", icon: Layers },
+  { href: "/admin/lessons", label: "Lesson", icon: Video },
+  { href: "/admin/quizzes", label: "Kuis", icon: FileQuestion },
   { href: "/admin/users", label: "Pengguna", icon: Users },
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },
 ];

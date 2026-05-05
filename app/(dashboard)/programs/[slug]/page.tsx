@@ -12,12 +12,13 @@ import { Badge } from "@/components/ui/badge";
 export default async function ProgramDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const session = await getServerSession(authOptions);
 
   const program = await db.program.findUnique({
-    where: { slug: params.slug, isPublished: true },
+    where: { slug: slug, isPublished: true },
     include: {
       modules: {
         orderBy: { order: "asc" },
@@ -52,10 +53,9 @@ export default async function ProgramDetailPage({
   const [lessonProgress, quizAttempts] = await Promise.all([
     db.lessonProgress.findMany({
       where: {
-        userId: session!.user.id,
-        lessonId: { in: lessonIds },
-        completed: true,
-      },
+  userId: session!.user.id,
+  lessonId: { in: lessonIds },
+},
       select: { lessonId: true },
     }),
     db.quizAttempt.findMany({
@@ -65,7 +65,7 @@ export default async function ProgramDetailPage({
   ]);
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
-  const passedQuizIds = new Set(quizAttempts.filter((a) => a.passed).map((a) => a.quizId));
+const passedQuizIds = new Set(quizAttempts.filter((a) => a.score >= 60).map((a) => a.quizId));
 
   const totalLessons = program.modules.reduce((s, m) => s + m.lessons.length, 0);
   const completedCount = program.modules.reduce(
@@ -90,7 +90,7 @@ export default async function ProgramDetailPage({
         programId: program!.id,
       },
     });
-    redirect(`/programs/${params.slug}`);
+    redirect(`/programs/${slug}`);
   }
 
   return (
@@ -145,7 +145,7 @@ export default async function ProgramDetailPage({
             </CardHeader>
             <CardContent>
               {program.description ? (
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                <p className="text-sm whitespace-pre-line">
                   {program.description}
                 </p>
               ) : (
@@ -197,7 +197,7 @@ export default async function ProgramDetailPage({
                         </span>
                         {canAccess && (
                           <Button size="sm" variant="ghost" className="h-7 gap-1" asChild>
-                            <Link href={`/programs/${params.slug}/${lesson.slug}`}>
+                            <Link href={`/programs/${slug}/${lesson.slug}`}>
                               {isDone ? "Ulangi" : "Mulai"}
                               <ChevronRight className="h-3 w-3" />
                             </Link>

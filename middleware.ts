@@ -25,7 +25,9 @@ export const config = {
     "/dashboard/:path*",
     "/programs/:path*",
     "/my-progress/:path*",
-    "/quizzes/:path*",
+    "/quiz/:path*",
+    "/leaderboard/:path*",
+    "/certificates/:path*",
     "/admin/:path*",
   ],
 };

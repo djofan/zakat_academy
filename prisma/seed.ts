@@ -1,151 +1,53 @@
-import bcrypt from "bcryptjs";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Role, VideoProvider } from "../src/generated/prisma/client";
-import pg from "pg";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL! });
-const adapter = new PrismaPg(pool);
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@/generated/prisma/client'
+import bcrypt from 'bcryptjs'
 
-const prisma = new PrismaClient({
-  adapter,
-});
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
+const adapter = new PrismaPg(pool)
+const db = new PrismaClient({ adapter })
 
 async function main() {
-  const adminPassword = await bcrypt.hash("admin123", 10);
-  const studentPassword = await bcrypt.hash("student123", 10);
-
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@zakatacademy.local" },
+  // Admin — NIS dari DB yang sudah ada
+  const adminPassword = await bcrypt.hash('admin123', 12)
+  const admin = await db.user.upsert({
+    where: { nis: 'ALA-01' },
     update: {},
     create: {
-      name: "Admin Zakat Academy",
-      email: "admin@zakatacademy.local",
+      name: 'Admin LAZSIP',
+      nis: 'ALA-01',
       passwordHash: adminPassword,
-      role: Role.ADMIN,
+      role: 'ADMIN',
     },
-  });
+  })
+  console.log('Admin:', admin.nis, '| password: admin123')
 
-  const student = await prisma.user.upsert({
-    where: { email: "student@zakatacademy.local" },
-    update: {},
-    create: {
-      name: "Student Demo",
-      email: "student@zakatacademy.local",
-      passwordHash: studentPassword,
-      role: Role.STUDENT,
-    },
-  });
+  // Sample students dari DB yang sudah ada
+  const student1Password = await bcrypt.hash('1234', 12)
+  await db.user.upsert({
+    where: { nis: 'LA-26-I-00001' },
+    update: { name: 'Jojo', no_hp: '08123456789', passwordHash: student1Password, role: 'STUDENT', gender: 'IKHWAN' },
+    create: { name: 'Jojo', nis: 'LA-26-I-00001', no_hp: '08123456789', passwordHash: student1Password, role: 'STUDENT', gender: 'IKHWAN' },
+  })
+  console.log('Student: LA-26-I-00001 | password: 1234')
 
-  const program = await prisma.program.upsert({
-    where: { slug: "fikih-zakat-dasar" },
-    update: {},
-    create: {
-      title: "Fikih Zakat Dasar",
-      slug: "fikih-zakat-dasar",
-      shortDescription: "Program dasar untuk memahami konsep, hukum, dan praktik zakat.",
-      description: "Belajar zakat secara bertahap melalui video, modul, dan evaluasi.",
-      isPublished: true,
-      order: 1,
-    },
-  });
-
-  const existingModule = await prisma.module.findFirst({
-    where: {
-      programId: program.id,
-      slug: "pengantar-zakat",
-    },
-  });
-
-  const moduleOne =
-    existingModule ||
-    (await prisma.module.create({
-      data: {
-        programId: program.id,
-        title: "Pengantar Zakat",
-        slug: "pengantar-zakat",
-        description: "Memahami dasar-dasar zakat.",
-        order: 1,
-        isPublished: true,
-      },
-    }));
-
-  const lessonOne = await prisma.lesson.upsert({
-    where: { slug: "apa-itu-zakat" },
-    update: {},
-    create: {
-      moduleId: moduleOne.id,
-      title: "Apa Itu Zakat",
-      slug: "apa-itu-zakat",
-      shortDescription: "Pengenalan zakat dalam Islam.",
-      contentSummary: "Membahas definisi, kedudukan, dan urgensi zakat.",
-      videoProvider: VideoProvider.YOUTUBE,
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      order: 1,
-      isPublished: true,
-    },
-  });
-
-  await prisma.lesson.upsert({
-    where: { slug: "siapa-yang-wajib-zakat" },
-    update: {},
-    create: {
-      moduleId: moduleOne.id,
-      title: "Siapa yang Wajib Zakat",
-      slug: "siapa-yang-wajib-zakat",
-      shortDescription: "Syarat wajib zakat.",
-      contentSummary: "Membahas muslim, nisab, haul, dan ketentuan dasar.",
-      videoProvider: VideoProvider.YOUTUBE,
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      order: 2,
-      isPublished: true,
-    },
-  });
-
-  await prisma.lessonAttachment.upsert({
-    where: {
-      id: "starter-attachment-1",
-    },
-    update: {},
-    create: {
-      id: "starter-attachment-1",
-      lessonId: lessonOne.id,
-      title: "Ringkasan Materi PDF",
-      fileUrl: "https://example.com/ringkasan-materi.pdf",
-      fileType: "application/pdf",
-      fileSize: 245760,
-    },
-  });
-
-  await prisma.enrollment.upsert({
-    where: {
-      userId_programId: {
-        userId: student.id,
-        programId: program.id,
-      },
-    },
-    update: {},
-    create: {
-      userId: student.id,
-      programId: program.id,
-    },
-  });
-
-  console.log("Seed selesai");
-  console.log({
-    adminEmail: admin.email,
-    adminPassword: "admin123",
-    studentEmail: student.email,
-    studentPassword: "student123",
-    program: program.title,
-  });
+  const student2Password = await bcrypt.hash('6789', 12)
+  await db.user.upsert({
+    where: { nis: 'LA-26-I-00002' },
+    update: { name: 'Ujang', no_hp: '08129876543', passwordHash: student2Password, role: 'STUDENT', gender: 'IKHWAN' },
+    create: { name: 'Ujang', nis: 'LA-26-I-00002', no_hp: '08129876543', passwordHash: student2Password, role: 'STUDENT', gender: 'IKHWAT' },
+  })
+  console.log('Student: LA-26-I-00002 | password: 6789')
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
+  .catch(console.error)
+  .finally(async () => {
+    await db.$disconnect()
+    await pool.end()
   })
-  .catch(async (error) => {
-    console.error(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  });

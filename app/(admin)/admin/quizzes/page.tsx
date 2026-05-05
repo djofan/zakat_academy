@@ -33,6 +33,10 @@ export default async function AdminQuizzesPage() {
     id: q.id,
     title: q.title,
     moduleId: q.moduleId,
+    isActive: q.isActive,
+    quizDate: q.quizDate?.toISOString() ?? null,
+    timeLimitMinutes: q.timeLimitMinutes,
+    allowRetake: q.allowRetake,
     module: {
       id: q.module.id,
       title: q.module.title,
@@ -60,9 +64,9 @@ export default async function AdminQuizzesPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Kuis</h1>
-        <p className="text-muted-foreground">Kelola kuis dalam modul.</p>
+        <p className="text-muted-foreground">Kelola kuis, jadwal, dan status aktif.</p>
       </div>
-      <Suspense fallback={<SkeletonTable cols={4} rows={5} />}>
+      <Suspense fallback={<SkeletonTable cols={7} rows={5} />}>
         <QuizTable initialQuizzes={initialQuizzes} initialModules={initialModules} />
       </Suspense>
     </div>

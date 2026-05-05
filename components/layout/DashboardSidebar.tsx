@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
 import {
   BookOpen,
   LayoutDashboard,
-  GraduationCap,
   BarChart3,
   LogOut,
   Menu,
+  Brain,
+  Trophy,
+  Award,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,9 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/programs", label: "Program", icon: BookOpen },
   { href: "/my-progress", label: "Kemajuan Saya", icon: BarChart3 },
+  { href: "/quiz", label: "Kuis", icon: Brain },
+  { href: "/leaderboard", label: "Peringkat", icon: Trophy },
+  { href: "/certificates", label: "Sertifikat", icon: Award },
 ];
 
 function SidebarContent({
@@ -77,7 +81,7 @@ function SidebarContent({
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{session.user?.name}</p>
             <p className="truncate text-xs text-muted-foreground">
-              {session.user?.email}
+              NIS: {session.user?.nis ?? "-"}
             </p>
           </div>
         </div>

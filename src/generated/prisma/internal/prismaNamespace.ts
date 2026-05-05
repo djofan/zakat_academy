@@ -1346,9 +1346,13 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
+  no_hp: 'no_hp',
   passwordHash: 'passwordHash',
   role: 'role',
   image: 'image',
+  nis: 'nis',
+  gender: 'gender',
+  certificateUrl: 'certificateUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1449,6 +1453,10 @@ export const QuizScalarFieldEnum = {
   description: 'description',
   passingScore: 'passingScore',
   isPublished: 'isPublished',
+  isActive: 'isActive',
+  quizDate: 'quizDate',
+  timeLimitMinutes: 'timeLimitMinutes',
+  allowRetake: 'allowRetake',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1484,6 +1492,9 @@ export const QuizAttemptScalarFieldEnum = {
   score: 'score',
   passed: 'passed',
   answers: 'answers',
+  startedAt: 'startedAt',
+  submittedAt: 'submittedAt',
+  isCompleted: 'isCompleted',
   createdAt: 'createdAt'
 } as const
 

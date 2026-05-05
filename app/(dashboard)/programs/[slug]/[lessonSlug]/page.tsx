@@ -8,15 +8,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { MarkCompleteButton } from "@/components/programs/MarkCompleteButton";
 import { ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
+import { VideoPlayer } from "@/components/shared/video-player";
 
 export default async function LessonPage({
   params,
 }: {
-  params: { slug: string; lessonSlug: string };
+  params: Promise<{ slug: string; lessonSlug: string }>;
 }) {
+  const { slug, lessonSlug } = await params
   const session = await getServerSession(authOptions);
 
-  const program = await db.program.findUnique({ where: { slug: params.slug } });
+  const program = await db.program.findUnique({ where: { slug: slug } });
   if (!program) notFound();
 
   const enrollment = await db.enrollment.findUnique({
@@ -28,12 +30,12 @@ export default async function LessonPage({
     },
   });
 
-  if (!enrollment) redirect(`/programs/${params.slug}`);
+  if (!enrollment) redirect(`/programs/${slug}`);
 
   const lesson = await db.lesson.findFirst({
     where: {
-      slug: params.lessonSlug,
-      module: { program: { slug: params.slug } },
+      slug: lessonSlug,
+      module: { program: { slug: slug } },
     },
     include: {
       module: {
@@ -66,29 +68,28 @@ export default async function LessonPage({
   return (
     <div className="flex h-[calc(100vh-3.5rem)] flex-col">
       {/* Video */}
-      <div className="bg-black">
-        <div className="aspect-video max-h-[60vh] mx-auto">
-          {lesson.videoUrl ? (
-            <iframe
-              src={lesson.videoUrl}
-              className="h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <Video className="h-16 w-16 text-white/30" />
-            </div>
-          )}
-        </div>
+      <div className="bg-white px-4 py-4">
+  <div className="mx-auto max-w-3xl">
+    {lesson.videoUrl ? (
+      <VideoPlayer
+        provider={lesson.videoProvider}
+        url={lesson.videoUrl}
+        className="rounded-xl overflow-hidden"
+      />
+    ) : (
+      <div className="aspect-video flex items-center justify-center rounded-xl bg-muted">
+        <Video className="h-16 w-16 text-white/30" />
       </div>
+    )}
+  </div>
+</div>
 
       {/* Lesson Info */}
       <div className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-3xl">
           <div className="mb-2 flex items-center gap-2">
             <Link
-              href={`/programs/${params.slug}`}
+              href={`/programs/${slug}`}
               className="text-sm text-muted-foreground hover:text-foreground"
             >
               ← {lesson.module.title}
@@ -119,7 +120,7 @@ export default async function LessonPage({
             <div className="ml-auto flex gap-2">
               {prevLesson && (
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/programs/${params.slug}/${prevLesson.slug}`}>
+                  <Link href={`/programs/${slug}/${prevLesson.slug}`}>
                     <ChevronLeft className="mr-1 h-4 w-4" />
                     Sebelumnya
                   </Link>
@@ -127,7 +128,7 @@ export default async function LessonPage({
               )}
               {nextLesson && (
                 <Button size="sm" asChild>
-                  <Link href={`/programs/${params.slug}/${nextLesson.slug}`}>
+                  <Link href={`/programs/${slug}/${nextLesson.slug}`}>
                     Selanjutnya
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Link>
@@ -144,7 +145,7 @@ export default async function LessonPage({
                 {allLessons.map((l) => (
                   <Link
                     key={l.id}
-                    href={`/programs/${params.slug}/${l.slug}`}
+                    href={`/programs/${slug}/${l.slug}`}
                     className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted ${
                       l.id === lesson.id ? "bg-muted font-medium" : "text-muted-foreground"
                     }`}

@@ -20,6 +20,10 @@ interface QuizFormProps {
     id: string;
     title: string;
     moduleId: string;
+    isActive: boolean;
+    quizDate: string | null;
+    timeLimitMinutes: number;
+    allowRetake: boolean;
     questions: {
       id: string;
       text: string;
@@ -45,11 +49,23 @@ function defaultQuestion() {
 
 function makeFormDefaults(quiz?: QuizFormProps["quiz"]) {
   if (!quiz) {
-    return { title: "", moduleId: "", questions: [defaultQuestion()] };
+    return {
+      title: "",
+      moduleId: "",
+      isActive: false,
+      quizDate: null,
+      timeLimitMinutes: 10,
+      allowRetake: false,
+      questions: [defaultQuestion()],
+    };
   }
   return {
     title: quiz.title,
     moduleId: quiz.moduleId,
+    isActive: quiz.isActive,
+    quizDate: quiz.quizDate ? quiz.quizDate : null,
+    timeLimitMinutes: quiz.timeLimitMinutes,
+    allowRetake: quiz.allowRetake,
     questions: [...quiz.questions]
       .sort((a, b) => a.order - b.order)
       .map((q) => ({
@@ -121,7 +137,7 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4 pl-2">
           {/* Module */}
           <div className="space-y-1.5">
             <Label>Modul *</Label>
@@ -158,6 +174,70 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
             )}
           </div>
 
+          {/* Quiz Settings */}
+          <div className="space-y-3 rounded-lg border p-4">
+            <p className="text-sm font-medium">Pengaturan Kuis</p>
+
+            {/* isActive */}
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isActive" className="cursor-pointer">Kuis Aktif</Label>
+              <input
+                id="isActive"
+                type="checkbox"
+                className="accent-primary h-4 w-4"
+                {...form.register("isActive")}
+              />
+            </div>
+
+            {/* quizDate */}
+            <div className="space-y-1.5">
+              <Label htmlFor="quizDate">Tanggal & Jam Kuis</Label>
+              <Input
+                id="quizDate"
+                type="datetime-local"
+                {...form.register("quizDate", {
+                  setValueAs: (v) => v === "" ? null : v,
+                })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Kosongkan jika kuis selalu tersedia (selama aktif).
+              </p>
+            </div>
+
+            {/* timeLimitMinutes */}
+            <div className="space-y-1.5">
+              <Label htmlFor="timeLimitMinutes">Batas Waktu (menit)</Label>
+              <Input
+                id="timeLimitMinutes"
+                type="number"
+                min={1}
+                max={120}
+                {...form.register("timeLimitMinutes", { valueAsNumber: true })}
+              />
+              {form.formState.errors.timeLimitMinutes && (
+                <p className="text-xs text-red-500">
+                  {String(form.formState.errors.timeLimitMinutes.message)}
+                </p>
+              )}
+            </div>
+
+            {/* allowRetake */}
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="allowRetake" className="cursor-pointer">Izinkan Pengulangan</Label>
+                <p className="text-xs text-muted-foreground">
+                  Student bisa mengerjakan lebih dari sekali.
+                </p>
+              </div>
+              <input
+                id="allowRetake"
+                type="checkbox"
+                className="accent-primary h-4 w-4"
+                {...form.register("allowRetake")}
+              />
+            </div>
+          </div>
+
           {/* Questions */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -170,6 +250,8 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
                 questionIndex={index}
                 control={form.control}
                 register={form.register}
+                setValue={form.setValue}
+                watch={form.watch}
                 errors={form.formState.errors}
                 onRemove={() => removeQuestion(index)}
               />

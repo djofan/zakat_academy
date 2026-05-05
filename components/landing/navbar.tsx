@@ -52,23 +52,6 @@ export function Navbar({ isLoggedIn }: NavbarProps) {
           </svg>
           <span>Zakat Academy</span>
         </Link>
-
-        <div className="flex items-center gap-2">
-          {isLoggedIn ? (
-            <Button size="sm" asChild>
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-          ) : (
-            <>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/login">Masuk</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/register">Daftar Gratis</Link>
-              </Button>
-            </>
-          )}
-        </div>
       </div>
     </header>
   );

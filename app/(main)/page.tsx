@@ -47,11 +47,6 @@ export default async function LandingPage() {
       <Navbar isLoggedIn={isLoggedIn} />
       <div className="pt-14">
         <HeroSection />
-        <StatsSection
-          totalPrograms={programs.length}
-          totalLessons={totalLessons}
-          totalUsers={totalStudents}
-        />
         <ProgramsSection programs={programsWithTotalLessons} />
         <FeaturesSection />
       </div>

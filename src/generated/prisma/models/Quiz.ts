@@ -28,10 +28,12 @@ export type AggregateQuiz = {
 
 export type QuizAvgAggregateOutputType = {
   passingScore: number | null
+  timeLimitMinutes: number | null
 }
 
 export type QuizSumAggregateOutputType = {
   passingScore: number | null
+  timeLimitMinutes: number | null
 }
 
 export type QuizMinAggregateOutputType = {
@@ -41,6 +43,10 @@ export type QuizMinAggregateOutputType = {
   description: string | null
   passingScore: number | null
   isPublished: boolean | null
+  isActive: boolean | null
+  quizDate: Date | null
+  timeLimitMinutes: number | null
+  allowRetake: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +58,10 @@ export type QuizMaxAggregateOutputType = {
   description: string | null
   passingScore: number | null
   isPublished: boolean | null
+  isActive: boolean | null
+  quizDate: Date | null
+  timeLimitMinutes: number | null
+  allowRetake: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,6 +73,10 @@ export type QuizCountAggregateOutputType = {
   description: number
   passingScore: number
   isPublished: number
+  isActive: number
+  quizDate: number
+  timeLimitMinutes: number
+  allowRetake: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -71,10 +85,12 @@ export type QuizCountAggregateOutputType = {
 
 export type QuizAvgAggregateInputType = {
   passingScore?: true
+  timeLimitMinutes?: true
 }
 
 export type QuizSumAggregateInputType = {
   passingScore?: true
+  timeLimitMinutes?: true
 }
 
 export type QuizMinAggregateInputType = {
@@ -84,6 +100,10 @@ export type QuizMinAggregateInputType = {
   description?: true
   passingScore?: true
   isPublished?: true
+  isActive?: true
+  quizDate?: true
+  timeLimitMinutes?: true
+  allowRetake?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -95,6 +115,10 @@ export type QuizMaxAggregateInputType = {
   description?: true
   passingScore?: true
   isPublished?: true
+  isActive?: true
+  quizDate?: true
+  timeLimitMinutes?: true
+  allowRetake?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +130,10 @@ export type QuizCountAggregateInputType = {
   description?: true
   passingScore?: true
   isPublished?: true
+  isActive?: true
+  quizDate?: true
+  timeLimitMinutes?: true
+  allowRetake?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -204,6 +232,10 @@ export type QuizGroupByOutputType = {
   description: string | null
   passingScore: number
   isPublished: boolean
+  isActive: boolean
+  quizDate: Date | null
+  timeLimitMinutes: number
+  allowRetake: boolean
   createdAt: Date
   updatedAt: Date
   _count: QuizCountAggregateOutputType | null
@@ -238,6 +270,10 @@ export type QuizWhereInput = {
   description?: Prisma.StringNullableFilter<"Quiz"> | string | null
   passingScore?: Prisma.IntFilter<"Quiz"> | number
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
+  isActive?: Prisma.BoolFilter<"Quiz"> | boolean
+  quizDate?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
+  timeLimitMinutes?: Prisma.IntFilter<"Quiz"> | number
+  allowRetake?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
@@ -252,6 +288,10 @@ export type QuizOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   passingScore?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  quizDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
+  allowRetake?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   module?: Prisma.ModuleOrderByWithRelationInput
@@ -269,6 +309,10 @@ export type QuizWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Quiz"> | string | null
   passingScore?: Prisma.IntFilter<"Quiz"> | number
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
+  isActive?: Prisma.BoolFilter<"Quiz"> | boolean
+  quizDate?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
+  timeLimitMinutes?: Prisma.IntFilter<"Quiz"> | number
+  allowRetake?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
@@ -283,6 +327,10 @@ export type QuizOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   passingScore?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  quizDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
+  allowRetake?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.QuizCountOrderByAggregateInput
@@ -302,6 +350,10 @@ export type QuizScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Quiz"> | string | null
   passingScore?: Prisma.IntWithAggregatesFilter<"Quiz"> | number
   isPublished?: Prisma.BoolWithAggregatesFilter<"Quiz"> | boolean
+  isActive?: Prisma.BoolWithAggregatesFilter<"Quiz"> | boolean
+  quizDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Quiz"> | Date | string | null
+  timeLimitMinutes?: Prisma.IntWithAggregatesFilter<"Quiz"> | number
+  allowRetake?: Prisma.BoolWithAggregatesFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Quiz"> | Date | string
 }
@@ -312,6 +364,10 @@ export type QuizCreateInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   module: Prisma.ModuleCreateNestedOneWithoutQuizzesInput
@@ -326,6 +382,10 @@ export type QuizUncheckedCreateInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   questions?: Prisma.QuizQuestionUncheckedCreateNestedManyWithoutQuizInput
@@ -338,6 +398,10 @@ export type QuizUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   module?: Prisma.ModuleUpdateOneRequiredWithoutQuizzesNestedInput
@@ -352,6 +416,10 @@ export type QuizUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   questions?: Prisma.QuizQuestionUncheckedUpdateManyWithoutQuizNestedInput
@@ -365,6 +433,10 @@ export type QuizCreateManyInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -375,6 +447,10 @@ export type QuizUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -386,6 +462,10 @@ export type QuizUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,12 +487,17 @@ export type QuizCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   passingScore?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  quizDate?: Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
+  allowRetake?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type QuizAvgOrderByAggregateInput = {
   passingScore?: Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
 }
 
 export type QuizMaxOrderByAggregateInput = {
@@ -422,6 +507,10 @@ export type QuizMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   passingScore?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  quizDate?: Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
+  allowRetake?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,12 +522,17 @@ export type QuizMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   passingScore?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  quizDate?: Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
+  allowRetake?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type QuizSumOrderByAggregateInput = {
   passingScore?: Prisma.SortOrder
+  timeLimitMinutes?: Prisma.SortOrder
 }
 
 export type QuizScalarRelationFilter = {
@@ -522,6 +616,10 @@ export type QuizCreateWithoutModuleInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   questions?: Prisma.QuizQuestionCreateNestedManyWithoutQuizInput
@@ -534,6 +632,10 @@ export type QuizUncheckedCreateWithoutModuleInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   questions?: Prisma.QuizQuestionUncheckedCreateNestedManyWithoutQuizInput
@@ -576,6 +678,10 @@ export type QuizScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Quiz"> | string | null
   passingScore?: Prisma.IntFilter<"Quiz"> | number
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
+  isActive?: Prisma.BoolFilter<"Quiz"> | boolean
+  quizDate?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
+  timeLimitMinutes?: Prisma.IntFilter<"Quiz"> | number
+  allowRetake?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
 }
@@ -586,6 +692,10 @@ export type QuizCreateWithoutQuestionsInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   module: Prisma.ModuleCreateNestedOneWithoutQuizzesInput
@@ -599,6 +709,10 @@ export type QuizUncheckedCreateWithoutQuestionsInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   attempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutQuizInput
@@ -626,6 +740,10 @@ export type QuizUpdateWithoutQuestionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   module?: Prisma.ModuleUpdateOneRequiredWithoutQuizzesNestedInput
@@ -639,6 +757,10 @@ export type QuizUncheckedUpdateWithoutQuestionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutQuizNestedInput
@@ -650,6 +772,10 @@ export type QuizCreateWithoutAttemptsInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   module: Prisma.ModuleCreateNestedOneWithoutQuizzesInput
@@ -663,6 +789,10 @@ export type QuizUncheckedCreateWithoutAttemptsInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   questions?: Prisma.QuizQuestionUncheckedCreateNestedManyWithoutQuizInput
@@ -690,6 +820,10 @@ export type QuizUpdateWithoutAttemptsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   module?: Prisma.ModuleUpdateOneRequiredWithoutQuizzesNestedInput
@@ -703,6 +837,10 @@ export type QuizUncheckedUpdateWithoutAttemptsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   questions?: Prisma.QuizQuestionUncheckedUpdateManyWithoutQuizNestedInput
@@ -714,6 +852,10 @@ export type QuizCreateManyModuleInput = {
   description?: string | null
   passingScore?: number
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: Date | string | null
+  timeLimitMinutes?: number
+  allowRetake?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -724,6 +866,10 @@ export type QuizUpdateWithoutModuleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   questions?: Prisma.QuizQuestionUpdateManyWithoutQuizNestedInput
@@ -736,6 +882,10 @@ export type QuizUncheckedUpdateWithoutModuleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   questions?: Prisma.QuizQuestionUncheckedUpdateManyWithoutQuizNestedInput
@@ -748,6 +898,10 @@ export type QuizUncheckedUpdateManyWithoutModuleInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passingScore?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quizDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  timeLimitMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  allowRetake?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -799,6 +953,10 @@ export type QuizSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   passingScore?: boolean
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: boolean
+  timeLimitMinutes?: boolean
+  allowRetake?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
@@ -814,6 +972,10 @@ export type QuizSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   passingScore?: boolean
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: boolean
+  timeLimitMinutes?: boolean
+  allowRetake?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
@@ -826,6 +988,10 @@ export type QuizSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   passingScore?: boolean
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: boolean
+  timeLimitMinutes?: boolean
+  allowRetake?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
@@ -838,11 +1004,15 @@ export type QuizSelectScalar = {
   description?: boolean
   passingScore?: boolean
   isPublished?: boolean
+  isActive?: boolean
+  quizDate?: boolean
+  timeLimitMinutes?: boolean
+  allowRetake?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type QuizOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "moduleId" | "title" | "description" | "passingScore" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["quiz"]>
+export type QuizOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "moduleId" | "title" | "description" | "passingScore" | "isPublished" | "isActive" | "quizDate" | "timeLimitMinutes" | "allowRetake" | "createdAt" | "updatedAt", ExtArgs["result"]["quiz"]>
 export type QuizInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
   questions?: boolean | Prisma.Quiz$questionsArgs<ExtArgs>
@@ -870,6 +1040,10 @@ export type $QuizPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     description: string | null
     passingScore: number
     isPublished: boolean
+    isActive: boolean
+    quizDate: Date | null
+    timeLimitMinutes: number
+    allowRetake: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["quiz"]>
@@ -1304,6 +1478,10 @@ export interface QuizFieldRefs {
   readonly description: Prisma.FieldRef<"Quiz", 'String'>
   readonly passingScore: Prisma.FieldRef<"Quiz", 'Int'>
   readonly isPublished: Prisma.FieldRef<"Quiz", 'Boolean'>
+  readonly isActive: Prisma.FieldRef<"Quiz", 'Boolean'>
+  readonly quizDate: Prisma.FieldRef<"Quiz", 'DateTime'>
+  readonly timeLimitMinutes: Prisma.FieldRef<"Quiz", 'Int'>
+  readonly allowRetake: Prisma.FieldRef<"Quiz", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Quiz", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Quiz", 'DateTime'>
 }

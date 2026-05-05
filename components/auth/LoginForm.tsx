@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/shared/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { loginSchema, type LoginInput } from "@/lib/validators/auth";
@@ -19,24 +20,34 @@ export function LoginForm() {
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { nis: "", password: "" },
   });
 
   async function onSubmit(values: LoginInput) {
     setLoading(true);
     try {
       const result = await signIn("credentials", {
-        email: values.email,
+        nis: values.nis,
         password: values.password,
         redirect: false,
       });
 
       if (result?.error) {
-        toast.error("Email atau password salah");
+        toast.error("NIS atau password salah");
       } else {
         toast.success("Login berhasil");
-        router.push("/dashboard");
-        router.refresh();
+
+        // Fetch session to determine role
+        const res = await fetch("/api/auth/session")
+        const sessionData = await res.json() as { user?: { role?: string } | null }
+        const role = sessionData?.user?.role
+
+        if (role === "ADMIN") {
+          router.push("/admin")
+        } else {
+          router.push("/dashboard")
+        }
+        router.refresh()
       }
     } finally {
       setLoading(false);
@@ -47,28 +58,27 @@ export function LoginForm() {
     <Card className="w-full max-w-sm">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Masuk</CardTitle>
-        <CardDescription>Masukkan email dan password untuk login</CardDescription>
+        <CardDescription>Masukkan NIS dan password untuk login</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="nis">NIS</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="nama@email.com"
-              autoComplete="email"
-              {...form.register("email")}
+              id="nis"
+              type="text"
+              placeholder="LA-XX-00000"
+              autoComplete="off"
+              {...form.register("nis")}
             />
-            {form.formState.errors.email && (
-              <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>
+            {form.formState.errors.nis && (
+              <p className="text-xs text-destructive">{form.formState.errors.nis.message}</p>
             )}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="••••••••"
               autoComplete="current-password"
               {...form.register("password")}

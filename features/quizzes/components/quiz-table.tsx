@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useTransition } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Power, Calendar, Clock, RotateCcw, PowerOff, PowerIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/data-table";
-import { deleteQuiz } from "../actions";
+import { deleteQuiz, toggleQuizActive } from "../actions";
 import { toast } from "sonner";
 import { QuizForm } from "./quiz-form";
 import {
@@ -19,11 +19,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 
 export type QuizRow = {
   id: string;
   title: string;
   moduleId: string;
+  isActive: boolean;
+  quizDate: string | null;
+  timeLimitMinutes: number;
+  allowRetake: boolean;
   module: { id: string; title: string; program: { id: string; title: string } };
   questions: { id: string; text: string; order: number; options: { id: string; label: string; isCorrect: boolean }[] }[];
 };
@@ -46,6 +51,7 @@ export function QuizTable({
   const [editQuiz, setEditQuiz] = useState<QuizRow | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<QuizRow | null>(null);
   const [deletePending, startDelete] = useTransition();
+  const [toggling, startToggle] = useTransition();
 
   function handleEdit(row: QuizRow) {
     setEditQuiz(row);
@@ -71,6 +77,22 @@ export function QuizTable({
     });
   }
 
+  function handleToggle(row: QuizRow) {
+    startToggle(async () => {
+      try {
+        await toggleQuizActive(row.id, !row.isActive);
+        setQuizzes((prev) =>
+          prev.map((q) =>
+            q.id === row.id ? { ...q, isActive: !q.isActive } : q
+          )
+        );
+        toast.success(row.isActive ? "Kuis dinonaktifkan" : "Kuis diaktifkan");
+      } catch {
+        toast.error("Gagal mengubah status kuis");
+      }
+    });
+  }
+
   const columns: ColumnDef<QuizRow>[] = [
     {
       accessorKey: "title",
@@ -85,16 +107,87 @@ export function QuizTable({
       ),
     },
     {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ row }) => (
+        row.original.isActive ? (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Aktif</Badge>
+        ) : (
+          <Badge variant="secondary">Nonaktif</Badge>
+        )
+      ),
+      enableSorting: false,
+    },
+    {
+      accessorKey: "quizDate",
+      header: "Jadwal",
+      cell: ({ row }) => {
+        const d = row.original.quizDate;
+        return d ? (
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Calendar className="h-3.5 w-3.5" />
+            {new Date(d).toLocaleString("id-ID", {
+              day: "2-digit", month: "short", year: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            })}
+          </div>
+        ) : (
+          <span className="text-xs text-muted-foreground">Tanpa jadwal</span>
+        );
+      },
+      enableSorting: false,
+    },
+    {
+      accessorKey: "timeLimitMinutes",
+      header: "Waktu",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1 text-sm">
+          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+          {row.original.timeLimitMinutes} menit
+        </div>
+      ),
+      enableSorting: false,
+    },
+    {
+      accessorKey: "allowRetake",
+      header: "Retake",
+      cell: ({ row }) => (
+        row.original.allowRetake ? (
+          <Badge variant="outline" className="text-xs">
+            <RotateCcw className="mr-1 h-3 w-3" />Izin
+          </Badge>
+        ) : (
+          <span className="text-xs text-muted-foreground">1x saja</span>
+        )
+      ),
+      enableSorting: false,
+    },
+    {
       accessorKey: "questions",
       header: "Soal",
       cell: ({ row }) => (
         <span className="tabular-nums">{row.original.questions.length}</span>
       ),
+      enableSorting: false,
     },
     {
       id: "actions",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
+          <Button
+            variant={row.original.isActive ? "ghost" : "outline"}
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => handleToggle(row.original)}
+            disabled={toggling}
+            title={row.original.isActive ? "Nonaktifkan" : "Aktifkan"}
+          >
+            {row.original.isActive ? (
+              <PowerOff className="h-4 w-4 text-green-600" />
+            ) : (
+              <PowerIcon className="h-4 w-4 text-muted-foreground" />
+            )}
+          </Button>
           <Button
             variant="ghost"
             size="sm"

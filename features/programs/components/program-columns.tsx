@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import type { ColumnDef } from "@tanstack/react-table";
-import { BookOpen, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { BookOpen, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -100,16 +99,6 @@ export function useProgramColumns(onEdit: (program: ProgramRow) => void) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <a
-                href={`/programs/${row.slug}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Lihat
-              </a>
-            </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => onEdit(row)}>
               <Pencil className="mr-2 h-4 w-4" />
               Edit

@@ -12,12 +12,17 @@ interface ResultPageProps {
   params: { quizId: string; attemptId: string };
 }
 
-export default async function QuizResultPage({ params }: ResultPageProps) {
+export default async function QuizResultPage({ 
+  params 
+}: { 
+  params: Promise<{ quizId: string; attemptId: string }> 
+}) {
+  const { quizId, attemptId } = await params
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
   const attempt = await db.quizAttempt.findUnique({
-    where: { id: params.attemptId },
+    where: { id: attemptId },
     include: {
       quiz: {
         include: {
@@ -33,12 +38,12 @@ export default async function QuizResultPage({ params }: ResultPageProps) {
     },
   });
 
-  if (!attempt || attempt.quizId !== params.quizId || attempt.userId !== session.user.id) {
+  if (!attempt || attempt.quizId !== quizId || attempt.userId !== session.user.id) {
     notFound();
   }
 
-  const score = attempt.score;
-  const passed = score >= 70;
+  const score = attempt.score ?? 0;
+  const passed = score >= 60;
   const answers = attempt.answers as Record<string, string>;
 
   return (
@@ -48,7 +53,7 @@ export default async function QuizResultPage({ params }: ResultPageProps) {
         <Card className="text-center">
           <CardContent className="py-8">
             <p className="text-sm text-muted-foreground mb-2">Skor Anda</p>
-            <p className="text-5xl font-bold mb-2">{score.toFixed(1)}</p>
+            <p className="text-5xl font-bold mb-2">{score?.toFixed(1) ?? '0.0'}</p>
             <p className="text-muted-foreground mb-4">dari 100</p>
             <Badge variant={passed ? "default" : "destructive"} className="text-sm px-4 py-1">
               {passed ? "LULUS" : "BELUM LULUS"}
@@ -56,7 +61,7 @@ export default async function QuizResultPage({ params }: ResultPageProps) {
             <p className="mt-3 text-sm text-muted-foreground">
               {passed
                 ? "Selamat! Anda telah menyelesaikan kuis ini."
-                : "Anda perlu skor minimal 70 untuk lulus. Silakan coba lagi."}
+                : "Anda perlu skor minimal 60 untuk lulus. Silakan coba lagi."}
             </p>
           </CardContent>
         </Card>

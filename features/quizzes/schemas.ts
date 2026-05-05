@@ -25,6 +25,10 @@ export type QuizQuestionValues = z.infer<typeof quizQuestionSchema>;
 export const quizSchema = z.object({
   title: z.string().min(3, "Judul minimal 3 karakter"),
   moduleId: z.string().min(1, "Modul wajib dipilih"),
+  isActive: z.boolean().default(false),
+  quizDate: z.string().optional().nullable(),
+  timeLimitMinutes: z.number().int().min(1).max(120).default(10),
+  allowRetake: z.boolean().default(false),
   questions: z
     .array(quizQuestionSchema)
     .min(1, "Minimal 1 soal"),
