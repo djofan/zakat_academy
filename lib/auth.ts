@@ -14,9 +14,8 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-  if (!credentials?.nis || !credentials?.password) {
-    return null;
-  }
+  console.log('🔍 NIS:', credentials?.nis)
+  if (!credentials?.nis || !credentials?.password) return null;
 
   const user = await db.user.findUnique({
     where: { nis: credentials.nis as string },
@@ -31,6 +30,7 @@ export const authOptions: AuthOptions = {
     },
   });
 
+  console.log('👤 User:', user?.name ?? 'NOT FOUND')
   if (!user || !user.passwordHash) return null;
 
   const isValid = await bcrypt.compare(
@@ -38,6 +38,7 @@ export const authOptions: AuthOptions = {
     user.passwordHash
   );
 
+  console.log('🔑 Valid:', isValid)
   if (!isValid) return null;
 
         return {
