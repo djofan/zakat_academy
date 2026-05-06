@@ -8,6 +8,9 @@ declare global {
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  max: 1,  // ← penting untuk serverless
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000,
 });
 
 const adapter = new PrismaPg(pool);

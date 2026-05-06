@@ -6,6 +6,8 @@ import { BookOpen, Users, Video } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardPage() {
   const [userCount, programCount, enrollmentCount] = await Promise.all([
     db.user.count(),

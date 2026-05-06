@@ -6,6 +6,8 @@ import { NisForm } from "@/features/users/components/nis-form";
 import { CreateStudentForm } from "@/features/users/components/create-student-form";
 import { getLastStudentNis } from "@/features/users/actions";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminUsersPage() {
   const [users, lastNisIkhwan, lastNisAkhwat] = await Promise.all([
     db.user.findMany({

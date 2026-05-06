@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { ModuleTable } from "@/features/modules/components/module-table";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminModulesPage() {
   const [modules, programs] = await Promise.all([
     db.module.findMany({

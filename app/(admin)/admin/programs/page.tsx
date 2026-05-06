@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { AdminProgramsClient } from "./programs-client";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminProgramsPage() {
   const programs = await db.program.findMany({
     orderBy: { order: "asc" },

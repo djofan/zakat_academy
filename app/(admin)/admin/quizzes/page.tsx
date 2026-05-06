@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { QuizTable } from "@/features/quizzes/components/quiz-table";
 import { SkeletonTable } from "@/components/shared/skeleton-table";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminQuizzesPage() {
   const [quizzes, modules] = await Promise.all([
     db.quiz.findMany({

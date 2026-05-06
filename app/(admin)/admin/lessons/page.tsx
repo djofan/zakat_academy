@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { LessonTable } from "@/features/lessons/components/lesson-table";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminLessonsPage() {
   const [lessons, modules] = await Promise.all([
     db.lesson.findMany({
