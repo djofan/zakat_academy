@@ -173,7 +173,7 @@ export async function canStartQuiz(quizId: string): Promise<{ ok: boolean; reaso
 
   const now = new Date();
   if (quiz.quizDate && quiz.quizDate > now) {
-    return { ok: false, reason: `Kuis tersedia mulai ${quiz.quizDate.toLocaleString("id-ID")}` };
+    return { ok: false, reason: `Kuis tersedia mulai ${quiz.quizDate.toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })}` };
   }
 
   const existing = await db.quizAttempt.findFirst({

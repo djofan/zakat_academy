@@ -127,9 +127,10 @@ export function QuizTable({
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Calendar className="h-3.5 w-3.5" />
             {new Date(d).toLocaleString("id-ID", {
-              day: "2-digit", month: "short", year: "numeric",
-              hour: "2-digit", minute: "2-digit",
-            })}
+  day: "2-digit", month: "short", year: "numeric",
+  hour: "2-digit", minute: "2-digit",
+  timeZone: "Asia/Jakarta",
+})}
           </div>
         ) : (
           <span className="text-xs text-muted-foreground">Tanpa jadwal</span>

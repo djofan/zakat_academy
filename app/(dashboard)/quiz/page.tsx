@@ -55,9 +55,10 @@ export default async function StudentQuizzesPage() {
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" />
                     {new Date(quiz.quizDate).toLocaleString("id-ID", {
-                      day: "2-digit", month: "short", year: "numeric",
-                      hour: "2-digit", minute: "2-digit",
-                    })}
+  day: "2-digit", month: "short", year: "numeric",
+  hour: "2-digit", minute: "2-digit",
+  timeZone: "Asia/Jakarta",
+})}
                   </div>
                 )}
 

@@ -44,6 +44,14 @@ export async function createStudent(data: {
     return { error: 'NIS sudah digunakan student lain' }
   }
 
+  // Cek no_hp sudah dipakai
+const existingPhone = await db.user.findUnique({
+  where: { no_hp: parsed.data.no_hp }
+})
+if (existingPhone) {
+  return { error: 'No HP sudah terdaftar' }
+}
+
   // Cek email sudah dipakai (kalau diisi)
   if (parsed.data.email) {
     const existingEmail = await db.user.findUnique({
@@ -127,19 +135,16 @@ export async function updateUserNis(data: {
 }
 
 export async function getLastStudentNis(gender: 'IKHWAN' | 'AKHWAT'): Promise<string | null> {
-  const genderCode = gender === 'IKHWAN' ? 'I' : 'A'
   const last = await db.user.findFirst({
     where: {
       role: 'STUDENT',
+      gender: gender,
       nis: { startsWith: `LA-` },
     },
     orderBy: { nis: 'desc' },
     select: { nis: true }
   })
-  if (!last?.nis) return null
-  // Filter by gender code from the NIS string (e.g., "LA-26-I-00001")
-  const code = last.nis.split('-')[2]
-  return code === genderCode ? last.nis : null
+  return last?.nis ?? null
 }
 
 export async function updateCertificateUrl(userId: string, url: string) {

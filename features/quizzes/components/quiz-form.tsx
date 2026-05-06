@@ -63,7 +63,9 @@ function makeFormDefaults(quiz?: QuizFormProps["quiz"]) {
     title: quiz.title,
     moduleId: quiz.moduleId,
     isActive: quiz.isActive,
-    quizDate: quiz.quizDate ? quiz.quizDate : null,
+    quizDate: quiz.quizDate
+  ? new Date(quiz.quizDate).toISOString().slice(0, 16)
+  : null,
     timeLimitMinutes: quiz.timeLimitMinutes,
     allowRetake: quiz.allowRetake,
     questions: [...quiz.questions]
@@ -196,8 +198,8 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
                 id="quizDate"
                 type="datetime-local"
                 {...form.register("quizDate", {
-                  setValueAs: (v) => v === "" ? null : v,
-                })}
+  setValueAs: (v) => v === "" ? null : v,
+})}
               />
               <p className="text-xs text-muted-foreground">
                 Kosongkan jika kuis selalu tersedia (selama aktif).
