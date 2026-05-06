@@ -40,7 +40,7 @@ async function main() {
   await db.user.upsert({
     where: { nis: 'LA-26-I-00002' },
     update: { name: 'Ujang', no_hp: '08129876543', passwordHash: student2Password, role: 'STUDENT', gender: 'IKHWAN' },
-    create: { name: 'Ujang', nis: 'LA-26-I-00002', no_hp: '08129876543', passwordHash: student2Password, role: 'STUDENT', gender: 'IKHWAT' },
+    create: { name: 'Ujang', nis: 'LA-26-I-00002', no_hp: '08129876543', passwordHash: student2Password, role: 'STUDENT', gender: 'IKHWAN' },
   })
   console.log('Student: LA-26-I-00002 | password: 6789')
 }
