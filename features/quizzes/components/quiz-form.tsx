@@ -64,7 +64,11 @@ function makeFormDefaults(quiz?: QuizFormProps["quiz"]) {
     moduleId: quiz.moduleId,
     isActive: quiz.isActive,
     quizDate: quiz.quizDate
-  ? new Date(quiz.quizDate).toISOString().slice(0, 16)
+  ? (() => {
+      const d = new Date(quiz.quizDate);
+      d.setHours(d.getHours() + 7); // UTC ke WIB
+      return d.toISOString().slice(0, 16);
+    })()
   : null,
     timeLimitMinutes: quiz.timeLimitMinutes,
     allowRetake: quiz.allowRetake,
@@ -198,7 +202,12 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
                 id="quizDate"
                 type="datetime-local"
                 {...form.register("quizDate", {
-  setValueAs: (v) => v === "" ? null : v,
+  setValueAs: (v) => {
+    if (!v || v === "") return null;
+    const d = new Date(v);
+    d.setHours(d.getHours() - 7); // WIB ke UTC
+    return d.toISOString();
+  },
 })}
               />
               <p className="text-xs text-muted-foreground">
