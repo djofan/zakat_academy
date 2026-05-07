@@ -205,7 +205,7 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
   setValueAs: (v) => {
     if (!v || v === "") return null;
     const d = new Date(v);
-    d.setHours(d.getHours() - 7); // WIB ke UTC
+    d.setHours(d.getHours() + 7); // WIB ke UTC
     return d.toISOString();
   },
 })}
