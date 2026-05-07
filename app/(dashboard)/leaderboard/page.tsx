@@ -14,6 +14,9 @@ export default async function LeaderboardPage() {
   const attempts = await db.quizAttempt.findMany({
     where: {
        isCompleted: true,
+        user: {
+        role: 'STUDENT',
+    },
     },
     select: {
       userId: true,
