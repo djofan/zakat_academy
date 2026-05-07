@@ -64,6 +64,13 @@ export default async function LeaderboardPage() {
 
   const myRank = rankings.findIndex((r) => r.userId === session.user.id) + 1
 
+  function getNilaiLabel(avg: number) {
+  if (avg >= 90) return { label: 'Mumtaz', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' }
+  if (avg >= 75) return { label: 'Jayyid Jiddan', color: 'bg-green-100 text-green-800 border-green-300' }
+  if (avg >= 60) return { label: 'Jayyid', color: 'bg-blue-100 text-blue-800 border-blue-300' }
+  return { label: 'Maqbul', color: 'bg-gray-100 text-gray-700 border-gray-300' }
+}
+
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -146,9 +153,12 @@ export default async function LeaderboardPage() {
 
                     {/* Score */}
                     <div className="text-right shrink-0">
-                      <p className="font-bold">{student.average.toFixed(1)}</p>
-                      <p className="text-xs text-muted-foreground">{student.totalQuizzes} kuis</p>
-                    </div>
+  <p className="font-bold">{student.average.toFixed(1)}</p>
+  <p className="text-xs text-muted-foreground">{student.totalQuizzes} kuis</p>
+  <span className={`mt-1 inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${getNilaiLabel(student.average).color}`}>
+    {getNilaiLabel(student.average).label}
+  </span>
+</div>
                   </div>
                 )
               })}
