@@ -13,7 +13,7 @@ export default async function LeaderboardPage() {
   // Ambil semua attempt yang sudah selesai
   const attempts = await db.quizAttempt.findMany({
     where: {
-      score: { not: null },
+       isCompleted: true,
     },
     select: {
       userId: true,
@@ -33,19 +33,19 @@ export default async function LeaderboardPage() {
   const scoreMap = new Map<string, { name: string; nis: string | null; gender: string | null; scores: number[] }>()
 
   for (const attempt of attempts) {
-    if (!attempt.score) continue
-    const existing = scoreMap.get(attempt.userId)
-    if (existing) {
-      existing.scores.push(attempt.score)
-    } else {
-      scoreMap.set(attempt.userId, {
-        name: attempt.user.name ?? 'Tanpa Nama',
-        nis: attempt.user.nis,
-        gender: attempt.user.gender,
-        scores: [attempt.score],
-      })
-    }
+  const score = attempt.score ?? 0  // ← kalau null, anggap 0
+  const existing = scoreMap.get(attempt.userId)
+  if (existing) {
+    existing.scores.push(score)
+  } else {
+    scoreMap.set(attempt.userId, {
+      name: attempt.user.name ?? 'Tanpa Nama',
+      nis: attempt.user.nis,
+      gender: attempt.user.gender,
+      scores: [score],
+    })
   }
+}
 
   // Buat array ranking
   const rankings = Array.from(scoreMap.entries())

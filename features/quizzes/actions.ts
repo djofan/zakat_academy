@@ -117,9 +117,12 @@ export async function getActiveQuizzes() {
 
   const quizzes = await db.quiz.findMany({
     where: {
-      isActive: true,
-      quizDate: { lte: now },
-    },
+  isActive: true,
+  OR: [
+    { quizDate: { lte: now } },
+    { quizDate: null },
+  ],
+},
     include: {
       module: { select: { title: true } },
       questions: {
