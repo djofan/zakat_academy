@@ -66,7 +66,7 @@ function makeFormDefaults(quiz?: QuizFormProps["quiz"]) {
     quizDate: quiz.quizDate
   ? (() => {
       const d = new Date(quiz.quizDate);
-      d.setHours(d.getHours() + 7); // UTC ke WIB
+      d.setHours(d.getHours() - 7); // UTC ke WIB
       return d.toISOString().slice(0, 16);
     })()
   : null,
@@ -205,7 +205,7 @@ export function QuizForm({ quiz, modules, open, onOpenChange }: QuizFormProps) {
   setValueAs: (v) => {
     if (!v || v === "") return null;
     const d = new Date(v);
-    d.setHours(d.getHours() + 7); // WIB ke UTC
+    d.setHours; // WIB ke UTC
     return d.toISOString();
   },
 })}
