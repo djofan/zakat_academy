@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+export const dynamic = 'force-dynamic'
+
 export default async function StudentDashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -34,9 +36,27 @@ export default async function StudentDashboardPage() {
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
 
+  const quizAttempts = await db.quizAttempt.findMany({
+    where: {
+      userId: session!.user.id,
+      isCompleted: true,
+    },
+    select: { score: true },
+  })
+
+  const avgScore = quizAttempts.length > 0
+    ? quizAttempts.reduce((sum, a) => sum + (a.score ?? 0), 0) / quizAttempts.length
+    : null
+
+  function getNilaiLabel(avg: number) {
+    if (avg >= 90) return { label: 'Mumtaz', color: 'text-yellow-700 bg-yellow-100 border-yellow-300' }
+    if (avg >= 80) return { label: 'Jayyid Jiddan', color: 'text-green-700 bg-green-100 border-green-300' }
+    if (avg >= 70) return { label: 'Jayyid', color: 'text-blue-700 bg-blue-100 border-blue-300' }
+    return { label: 'Maqbul', color: 'text-gray-700 bg-gray-100 border-gray-300' }
+  }
+
   const totalLessons = enrollments.reduce(
-    (sum, e) =>
-      sum + e.program.modules.reduce((s, m) => s + m.lessons.length, 0),
+    (sum, e) => sum + e.program.modules.reduce((s, m) => s + m.lessons.length, 0),
     0
   );
 
@@ -83,6 +103,42 @@ export default async function StudentDashboardPage() {
         ))}
       </div>
 
+      {/* Nilai Kuis */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-4">Nilai Kuis Saya</h2>
+        <Card>
+          <CardContent className="p-6">
+            {avgScore !== null ? (
+              <div className="flex items-center gap-6">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Trophy className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <p className="text-3xl font-bold">{avgScore.toFixed(1)}</p>
+                  <p className="text-xs text-muted-foreground mb-2">Rata-rata dari {quizAttempts.length} kuis</p>
+                  <span className={`inline-block rounded-full border px-3 py-1 text-xs font-medium ${getNilaiLabel(avgScore).color}`}>
+                    {getNilaiLabel(avgScore).label}
+                  </span>
+                </div>
+                <div className="ml-auto text-right">
+                  <Button size="sm" variant="outline" asChild>
+                    <Link href="/leaderboard">Lihat Peringkat</Link>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <Trophy className="mb-3 h-10 w-10 text-muted-foreground opacity-30" />
+                <p className="text-sm text-muted-foreground">Belum ada kuis yang dikerjakan.</p>
+                <Button size="sm" className="mt-3" asChild>
+                  <Link href="/quiz">Lihat Kuis</Link>
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Enrolled Programs */}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Program Saya</h2>
@@ -108,16 +164,12 @@ export default async function StudentDashboardPage() {
         <div className="space-y-4">
           {enrollments.map((enrollment) => {
             const progLessons = enrollment.program.modules.reduce(
-              (s, m) => s + m.lessons.length,
-              0
+              (s, m) => s + m.lessons.length, 0
             );
             const progCompleted = enrollment.program.modules.reduce(
-              (s, m) =>
-                s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length,
-              0
+              (s, m) => s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
             );
-            const progPercent =
-              progLessons > 0 ? Math.round((progCompleted / progLessons) * 100) : 0;
+            const progPercent = progLessons > 0 ? Math.round((progCompleted / progLessons) * 100) : 0;
 
             return (
               <Card key={enrollment.id}>

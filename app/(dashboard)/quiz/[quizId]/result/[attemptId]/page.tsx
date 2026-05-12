@@ -50,21 +50,36 @@ export default async function QuizResultPage({
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="mx-auto max-w-2xl space-y-6">
         {/* Score Banner */}
-        <Card className="text-center">
-          <CardContent className="py-8">
-            <p className="text-sm text-muted-foreground mb-2">Skor Anda</p>
-            <p className="text-5xl font-bold mb-2">{score?.toFixed(1) ?? '0.0'}</p>
-            <p className="text-muted-foreground mb-4">dari 100</p>
-            <Badge variant={passed ? "default" : "destructive"} className="text-sm px-4 py-1">
-              {passed ? "LULUS" : "BELUM LULUS"}
-            </Badge>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {passed
-                ? "Selamat! Anda telah menyelesaikan kuis ini."
-                : "Anda perlu skor minimal 60 untuk lulus. Silakan coba lagi."}
-            </p>
-          </CardContent>
-        </Card>
+<Card className="text-center">
+  <CardContent className="py-8">
+    <p className="text-sm text-muted-foreground mb-2">Hasil Kuis</p>
+    <div className="flex items-center justify-center gap-6 mb-4">
+      <div>
+        <p className="text-3xl font-bold text-green-600">
+          {attempt.quiz.questions.filter((q) => {
+            const selected = attempt.quiz.questions.find(() => answers[q.id]);
+            const selectedOption = q.options.find((o) => o.id === answers[q.id]);
+            return selectedOption?.isCorrect;
+          }).length}
+        </p>
+        <p className="text-xs text-muted-foreground">Benar</p>
+      </div>
+      <div className="text-2xl text-muted-foreground">/</div>
+      <div>
+        <p className="text-3xl font-bold text-red-500">
+          {attempt.quiz.questions.filter((q) => {
+            const selectedOption = q.options.find((o) => o.id === answers[q.id]);
+            return !selectedOption?.isCorrect;
+          }).length}
+        </p>
+        <p className="text-xs text-muted-foreground">Salah</p>
+      </div>
+    </div>
+    <p className="text-sm text-muted-foreground">
+      dari {attempt.quiz.questions.length} soal
+    </p>
+  </CardContent>
+</Card>
 
         {/* Question Review */}
         <div className="space-y-4">

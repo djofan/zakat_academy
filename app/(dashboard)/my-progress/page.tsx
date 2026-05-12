@@ -8,6 +8,15 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = 'force-dynamic'
+
+function getNilaiLabel(avg: number) {
+  if (avg >= 90) return { label: 'Mumtaz', color: 'text-yellow-700 bg-yellow-100 border-yellow-300' }
+  if (avg >= 80) return { label: 'Jayyid Jiddan', color: 'text-green-700 bg-green-100 border-green-300' }
+  if (avg >= 70) return { label: 'Jayyid', color: 'text-blue-700 bg-blue-100 border-blue-300' }
+  return { label: 'Maqbul', color: 'text-gray-700 bg-gray-100 border-gray-300' }
+}
+
 export default async function MyProgressPage() {
   const session = await getServerSession(authOptions);
 
@@ -27,27 +36,28 @@ export default async function MyProgressPage() {
   });
 
   const lessonProgress = await db.lessonProgress.findMany({
-    where: {
-      userId: session!.user.id,
-      completed: true,
-    },
+    where: { userId: session!.user.id, completed: true },
     select: { lessonId: true },
   });
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
 
+  const quizAttempts = await db.quizAttempt.findMany({
+    where: { userId: session!.user.id, isCompleted: true },
+    select: { score: true },
+  })
+
+  const avgScore = quizAttempts.length > 0
+    ? quizAttempts.reduce((sum, a) => sum + (a.score ?? 0), 0) / quizAttempts.length
+    : null
+
   const totalLessons = enrollments.reduce(
-    (s, e) => s + e.program.modules.reduce((ms, m) => ms + m.lessons.length, 0),
-    0
+    (s, e) => s + e.program.modules.reduce((ms, m) => ms + m.lessons.length, 0), 0
   );
   const totalCompleted = enrollments.reduce(
-    (s, e) =>
-      s +
-      e.program.modules.reduce(
-        (ms, m) => ms + m.lessons.filter((l) => completedLessonIds.has(l.id)).length,
-        0
-      ),
-    0
+    (s, e) => s + e.program.modules.reduce(
+      (ms, m) => ms + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
+    ), 0
   );
   const overallPercent = totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
 
@@ -59,7 +69,7 @@ export default async function MyProgressPage() {
       </div>
 
       {/* Overall */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-primary/10 p-3">
@@ -94,6 +104,29 @@ export default async function MyProgressPage() {
             </div>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="rounded-lg bg-primary/10 p-3">
+              <Trophy className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              {avgScore !== null ? (
+                <>
+                  <p className="text-2xl font-bold">{avgScore.toFixed(1)}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Rata-rata Kuis</p>
+                  <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${getNilaiLabel(avgScore).color}`}>
+                    {getNilaiLabel(avgScore).label}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold">-</p>
+                  <p className="text-xs text-muted-foreground">Rata-rata Kuis</p>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Per program */}
@@ -110,13 +143,10 @@ export default async function MyProgressPage() {
         <div className="space-y-4">
           {enrollments.map((enrollment) => {
             const programLessons = enrollment.program.modules.reduce(
-              (s, m) => s + m.lessons.length,
-              0
+              (s, m) => s + m.lessons.length, 0
             );
             const programCompleted = enrollment.program.modules.reduce(
-              (s, m) =>
-                s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length,
-              0
+              (s, m) => s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
             );
             const percent = programLessons > 0 ? Math.round((programCompleted / programLessons) * 100) : 0;
 
@@ -125,9 +155,16 @@ export default async function MyProgressPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base">{enrollment.program.title}</CardTitle>
-                    <Badge variant={percent === 100 ? "default" : "secondary"}>
-                      {percent === 100 ? "Selesai!" : `${percent}%`}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      {avgScore !== null && (
+                        <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${getNilaiLabel(avgScore).color}`}>
+                          {getNilaiLabel(avgScore).label}
+                        </span>
+                      )}
+                      <Badge variant={percent === 100 ? "default" : "secondary"}>
+                        {percent === 100 ? "Selesai!" : `${percent}%`}
+                      </Badge>
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {programCompleted} / {programLessons} lesson · Terdaftar{" "}
