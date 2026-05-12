@@ -161,3 +161,83 @@ export async function updateCertificateUrl(userId: string, url: string) {
   revalidatePath('/admin/users')
   return { success: true }
 }
+
+export async function importStudentsFromExcel(data: {
+  name: string
+  no_hp: string
+  gender: 'IKHWAN' | 'AKHWAT'
+  email?: string
+}[]) {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== 'ADMIN') {
+    return { error: 'Unauthorized' }
+  }
+
+  const results: { name: string; nis: string; password: string; status: 'success' | 'error'; message?: string }[] = []
+
+  // Ambil NIS terakhir per gender
+  let lastNisIkhwan = await getLastStudentNis('IKHWAN')
+  let lastNisAkhwat = await getLastStudentNis('AKHWAT')
+
+  for (const student of data) {
+    try {
+      // Validasi
+      if (!student.name || !student.no_hp || !student.gender) {
+        results.push({ name: student.name ?? '-', nis: '-', password: '-', status: 'error', message: 'Data tidak lengkap' })
+        continue
+      }
+
+      // Generate NIS
+      const lastNis = student.gender === 'IKHWAN' ? lastNisIkhwan : lastNisAkhwat
+      const code = student.gender === 'IKHWAN' ? 'I' : 'A'
+      const lastNum = lastNis ? parseInt(lastNis.split('-')[3]) : 0
+      const newNum = String(lastNum + 1).padStart(5, '0')
+      const nis = `LA-26-${code}-${newNum}`
+
+      // Update last NIS
+      if (student.gender === 'IKHWAN') lastNisIkhwan = nis
+      else lastNisAkhwat = nis
+
+      // Cek duplikat no HP
+      const existingPhone = await db.user.findUnique({ where: { no_hp: student.no_hp } })
+      if (existingPhone) {
+        results.push({ name: student.name, nis, password: '-', status: 'error', message: 'No HP sudah terdaftar' })
+        continue
+      }
+
+      // Cek duplikat email
+      if (student.email) {
+        const existingEmail = await db.user.findUnique({ where: { email: student.email } })
+        if (existingEmail) {
+          results.push({ name: student.name, nis, password: '-', status: 'error', message: 'Email sudah terdaftar' })
+          continue
+        }
+      }
+
+      // Hash password
+      const rawPassword = student.no_hp.slice(-4)
+      const passwordHash = await bcrypt.hash(rawPassword, 12)
+
+      // Buat akun
+      await db.user.create({
+        data: {
+          name: student.name,
+          no_hp: student.no_hp,
+          email: student.email || undefined,
+          gender: student.gender,
+          nis,
+          passwordHash,
+          role: 'STUDENT',
+        }
+      })
+
+      results.push({ name: student.name, nis, password: rawPassword, status: 'success' })
+
+    } catch (err) {
+      results.push({ name: student.name ?? '-', nis: '-', password: '-', status: 'error', message: 'Gagal membuat akun' })
+    }
+  }
+
+  revalidatePath('/admin/users')
+  return { results }
+}

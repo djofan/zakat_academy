@@ -5,6 +5,7 @@ import { Role } from "@/generated/prisma/client";
 import { NisForm } from "@/features/users/components/nis-form";
 import { CreateStudentForm } from "@/features/users/components/create-student-form";
 import { getLastStudentNis } from "@/features/users/actions";
+import { ImportStudentsForm } from "@/features/users/components/import-students-form";
 
 export const dynamic = 'force-dynamic'
 
@@ -37,10 +38,13 @@ export default async function AdminUsersPage() {
           <h1 className="text-2xl font-bold">Pengguna</h1>
           <p className="text-muted-foreground">Kelola pengguna sistem.</p>
         </div>
-        <CreateStudentForm
-          lastNisIkhwan={lastNisIkhwan}
-          lastNisAkhwat={lastNisAkhwat}
-        />
+        <div className="flex items-center gap-2">
+    <ImportStudentsForm />
+    <CreateStudentForm
+      lastNisIkhwan={lastNisIkhwan}
+      lastNisAkhwat={lastNisAkhwat}
+    />
+      </div>
       </div>
 
       {/* Student */}
