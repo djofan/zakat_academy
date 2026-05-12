@@ -62,7 +62,8 @@ export const ModelName = {
   QuizQuestion: 'QuizQuestion',
   QuizOption: 'QuizOption',
   QuizAttempt: 'QuizAttempt',
-  CompletionRecord: 'CompletionRecord'
+  CompletionRecord: 'CompletionRecord',
+  Setting: 'Setting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -251,6 +252,16 @@ export const CompletionRecordScalarFieldEnum = {
 } as const
 
 export type CompletionRecordScalarFieldEnum = (typeof CompletionRecordScalarFieldEnum)[keyof typeof CompletionRecordScalarFieldEnum]
+
+
+export const SettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -103,7 +103,7 @@ export function ImportStudentsForm() {
           <SheetTitle>Import Peserta dari Excel</SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-4 px-2">
           {/* Download template */}
           <div className="rounded-lg border border-dashed p-4 text-center">
             <p className="text-sm text-muted-foreground mb-2">

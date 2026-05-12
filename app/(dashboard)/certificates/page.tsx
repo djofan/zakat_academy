@@ -131,19 +131,16 @@ export default async function CertificatesPage() {
 
                 {/* Tombol download */}
                 {isComplete && (
-                  <div className="pt-2">
-                    {user?.certificateUrl ? (
-                      <a href={user.certificateUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-                        <Download className="h-4 w-4" />
-                        Download Sertifikat
-                      </a>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">
-                        Sertifikat sedang diproses admin. Silahkan hubungi admin via WA.
-                      </p>
-                    )}
-                  </div>
-                )}
+  <div className="pt-2">
+    <a
+      href={`/certificates/${program.id}`}
+      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+    >
+      <Award className="h-4 w-4" />
+      Lihat Sertifikat
+    </a>
+  </div>
+)}
               </CardContent>
             </Card>
           ))}

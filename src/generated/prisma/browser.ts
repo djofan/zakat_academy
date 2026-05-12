@@ -77,3 +77,8 @@ export type QuizAttempt = Prisma.QuizAttemptModel
  * 
  */
 export type CompletionRecord = Prisma.CompletionRecordModel
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = Prisma.SettingModel
