@@ -40,7 +40,7 @@ export default async function CertificatesPage() {
     select: { quizId: true, score: true },
   })
   const passedQuizIds = new Set(
-    quizAttempts.filter((a) => (a.score ?? 0) >= 70).map((a) => a.quizId)
+    quizAttempts.filter((a) => (a.score ?? 0) >= 60).map((a) => a.quizId)
   )
 
   // Ambil data user untuk certificateUrl

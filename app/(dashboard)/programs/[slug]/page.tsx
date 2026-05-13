@@ -65,7 +65,7 @@ export default async function ProgramDetailPage({
   ]);
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
-  const passedQuizIds = new Set(quizAttempts.filter((a) => (a.score ?? 0) >= 60).map((a) => a.quizId));
+  const passedQuizIds = new Set(quizAttempts.filter((a) => a.passed !== null).map((a) => a.quizId));
 
   const totalLessons = program.modules.reduce((s, m) => s + m.lessons.length, 0);
   const completedCount = program.modules.reduce(
