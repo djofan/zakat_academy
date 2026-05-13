@@ -13,8 +13,8 @@ const createStudentSchema = z.object({
   no_hp: z.string().min(4, { message: 'No HP minimal 4 angka' }),
   gender: z.enum(['IKHWAN', 'AKHWAT']),
   nis: z.string()
-    .min(1, { message: 'NIS tidak boleh kosong' })
-    .regex(/^LA-\d{2}-(I|A)-\d{5}$/, { message: 'Format NIS: LA-26-I-00001' }),
+  .min(1, { message: 'NIS tidak boleh kosong' })
+  .regex(/^LA[NT]-\d{5}$/, { message: 'Format NIS: LAN-26001' }),
 })
 
 export async function createStudent(data: {
@@ -85,61 +85,45 @@ if (existingPhone) {
 const nisSchema = z.object({
   userId: z.string().min(1),
   nis: z.string()
-    .min(1, { message: 'NIS tidak boleh kosong' })
-    .regex(/^LA-\d{2}-(I|A)-\d{5}$/, { message: 'Format NIS: LA-26-I-00001 atau LA-26-A-00001' }),
+  .min(1, { message: 'NIS tidak boleh kosong' })
+  .regex(/^LA[NT]-\d{5}$/, { message: 'Format NIS: LAN-26001 atau LAT-26001' }),
 })
 
-export async function updateUserNis(data: {
-  userId: string
-  nis: string
-}) {
+export async function updateUserNis(userId: string, nis: string) {
   const session = await getServerSession(authOptions)
 
   if (session?.user?.role !== 'ADMIN') {
     return { error: 'Unauthorized' }
   }
 
-  const parsed = nisSchema.safeParse(data)
-
+  const parsed = nisSchema.safeParse({ userId, nis })
   if (!parsed.success) {
-    const errors = parsed.error.flatten().formErrors
-    const firstError = errors[0]
-    return { error: firstError ?? 'Data tidak valid' }
+    return { error: parsed.error.flatten().fieldErrors.nis?.[0] ?? 'NIS tidak valid' }
   }
 
-  const existingNis = await db.user.findFirst({
-    where: {
-      nis: parsed.data.nis,
-      NOT: {
-        id: parsed.data.userId,
-      },
-    },
+  const existing = await db.user.findFirst({
+    where: { nis, NOT: { id: userId } }
   })
-
-  if (existingNis) {
+  if (existing) {
     return { error: 'NIS sudah digunakan student lain' }
   }
 
   await db.user.update({
-    where: {
-      id: parsed.data.userId,
-    },
-    data: {
-      nis: parsed.data.nis,
-    },
+    where: { id: userId },
+    data: { nis },
   })
 
   revalidatePath('/admin/users')
-
   return { success: true }
 }
 
 export async function getLastStudentNis(gender: 'IKHWAN' | 'AKHWAT'): Promise<string | null> {
+  const prefix = gender === 'IKHWAN' ? 'LAN-' : 'LAT-'
   const last = await db.user.findFirst({
     where: {
       role: 'STUDENT',
       gender: gender,
-      nis: { startsWith: `LA-` },
+      nis: { startsWith: prefix },
     },
     orderBy: { nis: 'desc' },
     select: { nis: true }

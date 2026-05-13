@@ -18,21 +18,16 @@ export function NisForm({ userId, currentNis }: NisFormProps) {
   const [loading, setLoading] = useState(false)
 
   const handleSave = async () => {
-  setLoading(true)
-
-  const res = await updateUserNis({
-    userId,
-    nis: value,
-  })
-
-  if (res?.error) {
-    alert(res.error)
-  } else {
-    setEditing(false)
+    setLoading(true)
+    const res = await updateUserNis(userId, value)
+    if (res?.error) {
+      toast.error(res.error)
+    } else {
+      toast.success('NIS berhasil disimpan')
+      setEditing(false)
+    }
+    setLoading(false)
   }
-
-  setLoading(false)
-}
 
   function handleCancel() {
     setValue(currentNis ?? '')
@@ -47,12 +42,7 @@ export function NisForm({ userId, currentNis }: NisFormProps) {
             <span className="text-muted-foreground italic">Belum ada NIS</span>
           )}
         </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={() => setEditing(true)}
-        >
+        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setEditing(true)}>
           <Pencil className="h-3 w-3" />
         </Button>
       </div>
@@ -64,26 +54,14 @@ export function NisForm({ userId, currentNis }: NisFormProps) {
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="LA-26-00001"
+        placeholder="LAN-26001"
         className="h-7 w-36 font-mono text-sm"
         autoFocus
       />
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-7 w-7 text-green-600"
-        onClick={handleSave}
-        disabled={loading}
-      >
+      <Button variant="ghost" size="icon" className="h-7 w-7 text-green-600" onClick={handleSave} disabled={loading}>
         <Check className="h-4 w-4" />
       </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-7 w-7 text-red-500"
-        onClick={handleCancel}
-        disabled={loading}
-      >
+      <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={handleCancel} disabled={loading}>
         <X className="h-4 w-4" />
       </Button>
     </div>

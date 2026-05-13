@@ -23,12 +23,10 @@ import {
 import { Plus, Loader2 } from 'lucide-react'
 
 function generateNextNis(lastNis: string | null, gender: 'IKHWAN' | 'AKHWAT'): string {
-  const code = gender === 'IKHWAN' ? 'I' : 'A'
-  if (!lastNis) return `LA-26-${code}-00001`
-  const parts = lastNis.split('-')
-  const year = parts[1]
-  const num = parseInt(parts[3]) + 1
-  return `LA-${year}-${code}-${String(num).padStart(5, '0')}`
+  const prefix = gender === 'IKHWAN' ? 'LAN-' : 'LAT-'
+  if (!lastNis) return `${prefix}26001`
+  const num = parseInt(lastNis.replace(prefix, '')) + 1
+  return `${prefix}26${String(num % 1000).padStart(3, '0')}`
 }
 
 interface CreateStudentFormProps {
