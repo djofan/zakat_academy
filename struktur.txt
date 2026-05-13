@@ -1,3 +1,5 @@
+
+=== APP ===  
 Folder PATH listing
 Volume serial number is B68D-3E3B
 C:\USERS\A\ZAKAT-ACADEMY\APP
@@ -43,7 +45,17 @@ C:\USERS\A\ZAKAT-ACADEMY\APP
 +---(dashboard)
 |   |   layout.tsx
 |   |   
+|   +---certificates
+|   |   |   page.tsx
+|   |   |   
+|   |   \---[programId]
+|   |           page.tsx
+|   |           print-button.tsx
+|   |           
 |   +---dashboard
+|   |       page.tsx
+|   |       
+|   +---leaderboard
 |   |       page.tsx
 |   |       
 |   +---my-progress
@@ -59,10 +71,14 @@ C:\USERS\A\ZAKAT-ACADEMY\APP
 |   |               page.tsx
 |   |               
 |   \---quiz
+|       |   page.tsx
+|       |   
 |       \---[quizId]
 |           |   page.tsx
 |           |   
 |           \---result
+|               |   page.tsx
+|               |   
 |               \---[attemptId]
 |                       page.tsx
 |                       
@@ -70,20 +86,30 @@ C:\USERS\A\ZAKAT-ACADEMY\APP
 |       layout.tsx
 |       page.tsx
 |       
-\---api
-    +---auth
-    |   +---register
-    |   |       route.ts
-    |   |       
-    |   \---[...nextauth]
-    |           route.ts
-    |           
-    +---progress
-    |       route.ts
-    |       
-    \---uploadthing
-            route.ts
-            
++---api
+|   +---auth
+|   |   +---register
+|   |   |       route.ts
+|   |   |       
+|   |   \---[...nextauth]
+|   |           route.ts
+|   |           
+|   +---debug
+|   |       route.ts
+|   |       
+|   +---maintenance
+|   |       route.ts
+|   |       
+|   +---progress
+|   |       route.ts
+|   |       
+|   \---uploadthing
+|           route.ts
+|           
+\---maintenance
+        page.tsx
+        
+=== COMPONENTS ===  
 Folder PATH listing
 Volume serial number is B68D-3E3B
 C:\USERS\A\ZAKAT-ACADEMY\COMPONENTS
@@ -139,6 +165,60 @@ C:\USERS\A\ZAKAT-ACADEMY\COMPONENTS
         tabs.tsx
         textarea.tsx
         
+=== FEATURES ===  
+Folder PATH listing
+Volume serial number is B68D-3E3B
+C:\USERS\A\ZAKAT-ACADEMY\FEATURES
++---lessons
+|   |   actions.ts
+|   |   schemas.ts
+|   |   
+|   \---components
+|           lesson-form.tsx
+|           lesson-table.tsx
+|           
++---modules
+|   |   actions.ts
+|   |   schemas.ts
+|   |   
+|   \---components
+|           module-form.tsx
+|           module-table.tsx
+|           
++---programs
+|   |   actions.ts
+|   |   schemas.ts
+|   |   
+|   \---components
+|           program-columns.tsx
+|           program-form.tsx
+|           
++---quizzes
+|   |   actions.ts
+|   |   schemas.ts
+|   |   
+|   \---components
+|           question-editor.tsx
+|           quiz-form.tsx
+|           quiz-player.tsx
+|           quiz-table.tsx
+|           
++---settings
+|   |   actions.ts
+|   |   
+|   \---components
+|           maintenance-toggle.tsx
+|           
+\---users
+    |   actions.ts
+    |   
+    \---components
+            certificate-url-form.tsx
+            create-student-form.tsx
+            import-students-form.tsx
+            nis-form.tsx
+            
+=== LIB ===  
 Folder PATH listing
 Volume serial number is B68D-3E3B
 C:\USERS\A\ZAKAT-ACADEMY\LIB
@@ -152,45 +232,26 @@ C:\USERS\A\ZAKAT-ACADEMY\LIB
         auth.ts
         register.ts
         
+=== PRISMA ===  
 Folder PATH listing
 Volume serial number is B68D-3E3B
 C:\USERS\A\ZAKAT-ACADEMY\PRISMA
+|   check-admin.ts
+|   debug-auth.ts
 |   schema.prisma
 |   seed.ts
+|   test-auth.ts
+|   verify-auth.ts
 |   
 \---migrations
     |   migration_lock.toml
     |   
-    \---20260416050259_init
+    +---20260416050259_init
+    |       migration.sql
+    |       
+    +---20260428073817_add_nis_to_user
+    |       migration.sql
+    |       
+    \---20260428093438_add_phone_to_user
             migration.sql
             
-Folder PATH listing
-Volume serial number is B68D-3E3B
-C:\USERS\A\ZAKAT-ACADEMY\SRC
-\---generated
-    \---prisma
-        |   browser.ts
-        |   client.ts
-        |   commonInputTypes.ts
-        |   enums.ts
-        |   models.ts
-        |   
-        +---internal
-        |       class.ts
-        |       prismaNamespace.ts
-        |       prismaNamespaceBrowser.ts
-        |       
-        \---models
-                CompletionRecord.ts
-                Enrollment.ts
-                Lesson.ts
-                LessonAttachment.ts
-                LessonProgress.ts
-                Module.ts
-                Program.ts
-                Quiz.ts
-                QuizAttempt.ts
-                QuizOption.ts
-                QuizQuestion.ts
-                User.ts
-                
