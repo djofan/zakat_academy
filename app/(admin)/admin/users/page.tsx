@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Role } from "@/generated/prisma/client";
 import { NisForm } from "@/features/users/components/nis-form";
+import { CertificateUrlForm } from "@/features/users/components/certificate-url-form";
 import { CreateStudentForm } from "@/features/users/components/create-student-form";
 import { getLastStudentNis } from "@/features/users/actions";
 import { ImportStudentsForm } from "@/features/users/components/import-students-form";
@@ -20,6 +21,7 @@ export default async function AdminUsersPage() {
         role: true,
         nis: true,
         no_hp: true,
+        certificateUrl: true,
         createdAt: true,
         _count: { select: { enrollments: true } },
       },
@@ -39,12 +41,12 @@ export default async function AdminUsersPage() {
           <p className="text-muted-foreground">Kelola pengguna sistem.</p>
         </div>
         <div className="flex items-center gap-2">
-    <ImportStudentsForm />
-    <CreateStudentForm
-      lastNisIkhwan={lastNisIkhwan}
-      lastNisAkhwat={lastNisAkhwat}
-    />
-      </div>
+          <ImportStudentsForm />
+          <CreateStudentForm
+            lastNisIkhwan={lastNisIkhwan}
+            lastNisAkhwat={lastNisAkhwat}
+          />
+        </div>
       </div>
 
       {/* Student */}
@@ -74,6 +76,9 @@ export default async function AdminUsersPage() {
                     )}
                     <div className="mt-1">
                       <NisForm userId={user.id} currentNis={user.nis} />
+                    </div>
+                    <div className="mt-1">
+                      <CertificateUrlForm userId={user.id} currentUrl={user.certificateUrl} />
                     </div>
                   </div>
                   <div className="ml-4 shrink-0 text-xs text-muted-foreground">
