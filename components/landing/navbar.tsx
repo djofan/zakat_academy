@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Menu, X } from "lucide-react";
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -11,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ isLoggedIn }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     function onScroll() {
@@ -21,38 +22,68 @@ export function Navbar({ isLoggedIn }: NavbarProps) {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 z-50 w-full bg-white transition-shadow duration-200",
-        scrolled && "shadow-sm"
-      )}
-    >
+    <header className={cn(
+      "fixed top-0 z-50 w-full bg-white/95 backdrop-blur-sm transition-all duration-200",
+      scrolled && "shadow-sm border-b border-gray-100"
+    )}>
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            className="h-5 w-5 text-primary"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>Zakat Academy</span>
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 font-semibold">
+          <img src="/logo-lazsip.webp" alt="LAZSIP" className="h-7 w-7 object-contain" />
+          <span className="text-gray-900">Zakat Academy</span>
         </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden items-center gap-2 sm:flex">
+          {isLoggedIn ? (
+            <a href="/dashboard" className="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">
+              Dashboard
+            </a>
+          ) : (
+            <>
+              <a href="/login" className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+                Masuk
+              </a>
+              <a href="https://wa.me/628111186626" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">
+                Daftar
+              </a>
+            </>
+          )}
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 sm:hidden"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="border-t border-gray-100 bg-white px-4 py-3 sm:hidden">
+          <div className="flex flex-col gap-2">
+            <a href="#programs" className="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>
+              Program
+            </a>
+            {isLoggedIn ? (
+              <a href="/dashboard" className="rounded-lg bg-green-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-green-700">
+                Dashboard
+              </a>
+            ) : (
+              <>
+                <a href="/login" className="rounded-lg border border-gray-200 px-3 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  Masuk
+                </a>
+                <a href="https://wa.me/628111186626" target="_blank" rel="noopener noreferrer" className="rounded-lg bg-green-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-green-700">
+                  Daftar
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
