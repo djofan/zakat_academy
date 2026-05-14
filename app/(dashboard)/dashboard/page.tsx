@@ -2,12 +2,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import Link from "next/link";
-import { BookOpen, GraduationCap, Trophy, Video } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { BookOpen, GraduationCap, Trophy, Video, ArrowRight } from "lucide-react";
 
 export const dynamic = 'force-dynamic'
+
+function getNilaiLabel(avg: number) {
+  if (avg >= 90) return { label: 'Mumtaz', color: 'text-yellow-700 bg-yellow-50 border-yellow-200' }
+  if (avg >= 80) return { label: 'Jayyid Jiddan', color: 'text-green-700 bg-green-50 border-green-200' }
+  if (avg >= 60) return { label: 'Jayyid', color: 'text-blue-700 bg-blue-50 border-blue-200' }
+  return { label: 'Maqbul', color: 'text-gray-600 bg-gray-50 border-gray-200' }
+}
 
 export default async function StudentDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -17,9 +21,7 @@ export default async function StudentDashboardPage() {
     include: {
       program: {
         include: {
-          modules: {
-            include: { lessons: true },
-          },
+          modules: { include: { lessons: true } },
         },
       },
     },
@@ -27,20 +29,14 @@ export default async function StudentDashboardPage() {
   });
 
   const lessonProgress = await db.lessonProgress.findMany({
-    where: {
-      userId: session!.user.id,
-      completed: true,
-    },
+    where: { userId: session!.user.id, completed: true },
     select: { lessonId: true },
   });
 
   const completedLessonIds = new Set(lessonProgress.map((p) => p.lessonId));
 
   const quizAttempts = await db.quizAttempt.findMany({
-    where: {
-      userId: session!.user.id,
-      isCompleted: true,
-    },
+    where: { userId: session!.user.id, isCompleted: true },
     select: { score: true },
   })
 
@@ -48,159 +44,141 @@ export default async function StudentDashboardPage() {
     ? quizAttempts.reduce((sum, a) => sum + (a.score ?? 0), 0) / quizAttempts.length
     : null
 
-  function getNilaiLabel(avg: number) {
-    if (avg >= 90) return { label: 'Mumtaz', color: 'text-yellow-700 bg-yellow-100 border-yellow-300' }
-    if (avg >= 80) return { label: 'Jayyid Jiddan', color: 'text-green-700 bg-green-100 border-green-300' }
-    if (avg >= 60) return { label: 'Jayyid', color: 'text-blue-700 bg-blue-100 border-blue-300' }
-    return { label: 'Maqbul', color: 'text-gray-700 bg-gray-100 border-gray-300' }
-  }
-
   const totalLessons = enrollments.reduce(
-    (sum, e) => sum + e.program.modules.reduce((s, m) => s + m.lessons.length, 0),
-    0
+    (sum, e) => sum + e.program.modules.reduce((s, m) => s + m.lessons.length, 0), 0
   );
 
-  const completedLessons = enrollments.reduce((sum, e) => {
-    return (
-      sum +
-      e.program.modules.reduce((s, m) => {
-        return s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length;
-      }, 0)
-    );
-  }, 0);
+  const completedLessons = enrollments.reduce((sum, e) =>
+    sum + e.program.modules.reduce((s, m) =>
+      s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
+    ), 0
+  );
 
-  const overallPercent =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const overallPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   const stats = [
-    { label: "Program Diikuti", value: enrollments.length, icon: BookOpen },
-    { label: "Total Modul", value: totalLessons, icon: Video },
-    { label: "Lesson Selesai", value: completedLessons, icon: Trophy },
-    { label: "Progress Keseluruhan", value: `${overallPercent}%`, icon: GraduationCap },
+    { label: "Program Diikuti", value: enrollments.length, icon: BookOpen, color: "bg-green-50 text-green-600" },
+    { label: "Total Lesson", value: totalLessons, icon: Video, color: "bg-orange-50 text-orange-500" },
+    { label: "Lesson Selesai", value: completedLessons, icon: Trophy, color: "bg-green-50 text-green-600" },
+    { label: "Progress", value: `${overallPercent}%`, icon: GraduationCap, color: "bg-orange-50 text-orange-500" },
   ];
 
   return (
-    <div>
+    <div className="p-4 md:p-6">
+      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Selamat Datang, {session?.user?.name}!</h1>
-        <p className="text-muted-foreground">Lanjutkan perjalanan belajar Anda.</p>
+        <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
+          Selamat Datang, {session?.user?.name}! 👋
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">Lanjutkan perjalanan belajar Anda.</p>
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map(({ label, value, icon: Icon }) => (
-          <Card key={label}>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="rounded-lg bg-primary/10 p-3">
-                <Icon className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{value}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        {stats.map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+            <div className={`mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl ${color}`}>
+              <Icon className="h-4 w-4" />
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="mt-0.5 text-xs text-gray-500">{label}</p>
+          </div>
         ))}
       </div>
 
       {/* Nilai Kuis */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Nilai Kuis Saya</h2>
-        <Card>
-          <CardContent className="p-6">
-            {avgScore !== null ? (
-              <div className="flex items-center gap-6">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Trophy className="h-8 w-8 text-primary" />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold">{avgScore.toFixed(1)}</p>
-                  <p className="text-xs text-muted-foreground mb-2">Rata-rata dari {quizAttempts.length} kuis</p>
-                  <span className={`inline-block rounded-full border px-3 py-1 text-xs font-medium ${getNilaiLabel(avgScore).color}`}>
-                    {getNilaiLabel(avgScore).label}
-                  </span>
-                </div>
-                <div className="ml-auto text-right">
-                  <Button size="sm" variant="outline" asChild>
-                    <Link href="/leaderboard">Lihat Peringkat</Link>
-                  </Button>
-                </div>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-semibold text-gray-900">Nilai Kuis Saya</h2>
+          <Link href="/leaderboard" className="flex items-center gap-1 text-xs text-green-600 hover:text-green-700">
+            Lihat Peringkat <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          {avgScore !== null ? (
+            <div className="flex items-center gap-5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-green-50">
+                <Trophy className="h-7 w-7 text-green-600" />
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center">
-                <Trophy className="mb-3 h-10 w-10 text-muted-foreground opacity-30" />
-                <p className="text-sm text-muted-foreground">Belum ada kuis yang dikerjakan.</p>
-                <Button size="sm" className="mt-3" asChild>
-                  <Link href="/quiz">Lihat Kuis</Link>
-                </Button>
+              <div>
+                <p className="text-3xl font-bold text-gray-900">{avgScore.toFixed(1)}</p>
+                <p className="text-xs text-gray-400">Rata-rata dari {quizAttempts.length} kuis</p>
+                <span className={`mt-1.5 inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium ${getNilaiLabel(avgScore).color}`}>
+                  {getNilaiLabel(avgScore).label}
+                </span>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center py-4 text-center">
+              <Trophy className="mb-2 h-8 w-8 text-gray-200" />
+              <p className="text-sm text-gray-400">Belum ada kuis yang dikerjakan.</p>
+              <Link href="/quiz" className="mt-3 rounded-lg bg-green-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-green-700">
+                Lihat Kuis
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Enrolled Programs */}
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Program Saya</h2>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/programs">Jelajahi Program</Link>
-        </Button>
-      </div>
+      {/* Program Saya */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-semibold text-gray-900">Program Saya</h2>
+          <Link href="/programs" className="flex items-center gap-1 text-xs text-green-600 hover:text-green-700">
+            Jelajahi <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
 
-      {enrollments.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <BookOpen className="mb-3 h-10 w-10 text-muted-foreground" />
-            <p className="mb-1 font-medium">Belum mengikuti program apapun</p>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Mulai belajar dengan memilih program yang tersedia.
-            </p>
-            <Button asChild>
-              <Link href="/programs">Lihat Program</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {enrollments.map((enrollment) => {
-            const progLessons = enrollment.program.modules.reduce(
-              (s, m) => s + m.lessons.length, 0
-            );
-            const progCompleted = enrollment.program.modules.reduce(
-              (s, m) => s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
-            );
-            const progPercent = progLessons > 0 ? Math.round((progCompleted / progLessons) * 100) : 0;
+        {enrollments.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center">
+            <BookOpen className="mx-auto mb-3 h-8 w-8 text-gray-200" />
+            <p className="text-sm font-medium text-gray-600">Belum mengikuti program apapun</p>
+            <p className="mt-1 text-xs text-gray-400">Mulai belajar dengan memilih program yang tersedia.</p>
+            <Link href="/programs" className="mt-4 inline-block rounded-lg bg-green-600 px-4 py-2 text-xs font-medium text-white hover:bg-green-700">
+              Lihat Program
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {enrollments.map((enrollment) => {
+              const progLessons = enrollment.program.modules.reduce((s, m) => s + m.lessons.length, 0);
+              const progCompleted = enrollment.program.modules.reduce(
+                (s, m) => s + m.lessons.filter((l) => completedLessonIds.has(l.id)).length, 0
+              );
+              const progPercent = progLessons > 0 ? Math.round((progCompleted / progLessons) * 100) : 0;
 
-            return (
-              <Card key={enrollment.id}>
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                    <BookOpen className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{enrollment.program.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {progCompleted} / {progLessons} lesson selesai
-                    </p>
-                    <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted">
-                      <div
-                        className="h-1.5 rounded-full bg-primary transition-all"
-                        style={{ width: `${progPercent}%` }}
-                      />
+              return (
+                <div key={enrollment.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-50">
+                      <BookOpen className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-gray-900">{enrollment.program.title}</p>
+                      <p className="text-xs text-gray-400">{progCompleted} / {progLessons} lesson selesai</p>
+                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                        <div
+                          className="h-full rounded-full bg-green-500 transition-all"
+                          style={{ width: `${progPercent}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      <span className="text-sm font-semibold text-gray-700">{progPercent}%</span>
+                      <Link
+                        href={`/programs/${enrollment.program.slug}`}
+                        className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                      >
+                        Lanjut
+                      </Link>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Badge variant="secondary">{progPercent}%</Badge>
-                    <Button size="sm" asChild>
-                      <Link href={`/programs/${enrollment.program.slug}`}>Lanjut</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
