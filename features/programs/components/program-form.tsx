@@ -45,6 +45,7 @@ interface ProgramFormProps {
     shortDescription?: string | null;
     description?: string | null;
     thumbnailUrl?: string | null;
+    materialUrl?: string | null;
     isPublished?: boolean;
     order?: number;
   } | null;
@@ -84,6 +85,7 @@ export function ProgramForm({
         shortDescription: editData?.shortDescription ?? "",
         description: editData?.description ?? "",
         thumbnailUrl: editData?.thumbnailUrl ?? "",
+        materialUrl: editData?.materialUrl ?? "",
         isPublished: editData?.isPublished ?? false,
         order: editData?.order ?? 0,
       });
@@ -200,19 +202,32 @@ export function ProgramForm({
 </div>
 
           {/* Thumbnail URL */}
-          <div className="space-y-1.5">
-            <Label htmlFor="thumbnailUrl">URL Thumbnail</Label>
-            <Input
-              id="thumbnailUrl"
-              placeholder="https://..."
-              {...form.register("thumbnailUrl")}
-            />
-            {form.formState.errors.thumbnailUrl && (
-              <p className="text-xs text-red-500">
-                {form.formState.errors.thumbnailUrl.message}
-              </p>
-            )}
-          </div>
+<div className="space-y-1.5">
+  <Label htmlFor="thumbnailUrl">URL Thumbnail</Label>
+  <Input
+    id="thumbnailUrl"
+    placeholder="https://..."
+    {...form.register("thumbnailUrl")}
+  />
+  {form.formState.errors.thumbnailUrl && (
+    <p className="text-xs text-red-500">
+      {form.formState.errors.thumbnailUrl.message}
+    </p>
+  )}
+</div>
+
+{/* Material URL */}
+<div className="space-y-1.5">
+  <Label htmlFor="materialUrl">URL Materi PDF</Label>
+  <Input
+    id="materialUrl"
+    placeholder="https://drive.google.com/..."
+    {...form.register("materialUrl")}
+  />
+  <p className="text-xs text-muted-foreground">
+    Link Google Drive atau PDF materi utama program.
+  </p>
+</div>
 
           {/* Order */}
           <div className="space-y-1.5">

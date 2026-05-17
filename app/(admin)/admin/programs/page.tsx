@@ -24,6 +24,7 @@ export default async function AdminProgramsPage() {
         shortDescription: p.shortDescription,
         description: p.description,
         thumbnailUrl: p.thumbnailUrl,
+        materialUrl: p.materialUrl,
         isPublished: p.isPublished,
         order: p.order,
         createdAt: p.createdAt,

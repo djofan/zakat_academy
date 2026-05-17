@@ -41,6 +41,7 @@ export type ProgramMinAggregateOutputType = {
   shortDescription: string | null
   description: string | null
   thumbnailUrl: string | null
+  materialUrl: string | null
   isPublished: boolean | null
   order: number | null
   createdAt: Date | null
@@ -54,6 +55,7 @@ export type ProgramMaxAggregateOutputType = {
   shortDescription: string | null
   description: string | null
   thumbnailUrl: string | null
+  materialUrl: string | null
   isPublished: boolean | null
   order: number | null
   createdAt: Date | null
@@ -67,6 +69,7 @@ export type ProgramCountAggregateOutputType = {
   shortDescription: number
   description: number
   thumbnailUrl: number
+  materialUrl: number
   isPublished: number
   order: number
   createdAt: number
@@ -90,6 +93,7 @@ export type ProgramMinAggregateInputType = {
   shortDescription?: true
   description?: true
   thumbnailUrl?: true
+  materialUrl?: true
   isPublished?: true
   order?: true
   createdAt?: true
@@ -103,6 +107,7 @@ export type ProgramMaxAggregateInputType = {
   shortDescription?: true
   description?: true
   thumbnailUrl?: true
+  materialUrl?: true
   isPublished?: true
   order?: true
   createdAt?: true
@@ -116,6 +121,7 @@ export type ProgramCountAggregateInputType = {
   shortDescription?: true
   description?: true
   thumbnailUrl?: true
+  materialUrl?: true
   isPublished?: true
   order?: true
   createdAt?: true
@@ -216,6 +222,7 @@ export type ProgramGroupByOutputType = {
   shortDescription: string
   description: string | null
   thumbnailUrl: string | null
+  materialUrl: string | null
   isPublished: boolean
   order: number
   createdAt: Date
@@ -252,6 +259,7 @@ export type ProgramWhereInput = {
   shortDescription?: Prisma.StringFilter<"Program"> | string
   description?: Prisma.StringNullableFilter<"Program"> | string | null
   thumbnailUrl?: Prisma.StringNullableFilter<"Program"> | string | null
+  materialUrl?: Prisma.StringNullableFilter<"Program"> | string | null
   isPublished?: Prisma.BoolFilter<"Program"> | boolean
   order?: Prisma.IntFilter<"Program"> | number
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
@@ -268,6 +276,7 @@ export type ProgramOrderByWithRelationInput = {
   shortDescription?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnailUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  materialUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -287,6 +296,7 @@ export type ProgramWhereUniqueInput = Prisma.AtLeast<{
   shortDescription?: Prisma.StringFilter<"Program"> | string
   description?: Prisma.StringNullableFilter<"Program"> | string | null
   thumbnailUrl?: Prisma.StringNullableFilter<"Program"> | string | null
+  materialUrl?: Prisma.StringNullableFilter<"Program"> | string | null
   isPublished?: Prisma.BoolFilter<"Program"> | boolean
   order?: Prisma.IntFilter<"Program"> | number
   createdAt?: Prisma.DateTimeFilter<"Program"> | Date | string
@@ -303,6 +313,7 @@ export type ProgramOrderByWithAggregationInput = {
   shortDescription?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnailUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  materialUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -324,6 +335,7 @@ export type ProgramScalarWhereWithAggregatesInput = {
   shortDescription?: Prisma.StringWithAggregatesFilter<"Program"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Program"> | string | null
   thumbnailUrl?: Prisma.StringNullableWithAggregatesFilter<"Program"> | string | null
+  materialUrl?: Prisma.StringNullableWithAggregatesFilter<"Program"> | string | null
   isPublished?: Prisma.BoolWithAggregatesFilter<"Program"> | boolean
   order?: Prisma.IntWithAggregatesFilter<"Program"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Program"> | Date | string
@@ -337,6 +349,7 @@ export type ProgramCreateInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -353,6 +366,7 @@ export type ProgramUncheckedCreateInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -369,6 +383,7 @@ export type ProgramUpdateInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,6 +400,7 @@ export type ProgramUncheckedUpdateInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -401,6 +417,7 @@ export type ProgramCreateManyInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -414,6 +431,7 @@ export type ProgramUpdateManyMutationInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -427,6 +445,7 @@ export type ProgramUncheckedUpdateManyInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -440,6 +459,7 @@ export type ProgramCountOrderByAggregateInput = {
   shortDescription?: Prisma.SortOrder
   description?: Prisma.SortOrder
   thumbnailUrl?: Prisma.SortOrder
+  materialUrl?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -457,6 +477,7 @@ export type ProgramMaxOrderByAggregateInput = {
   shortDescription?: Prisma.SortOrder
   description?: Prisma.SortOrder
   thumbnailUrl?: Prisma.SortOrder
+  materialUrl?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -470,6 +491,7 @@ export type ProgramMinOrderByAggregateInput = {
   shortDescription?: Prisma.SortOrder
   description?: Prisma.SortOrder
   thumbnailUrl?: Prisma.SortOrder
+  materialUrl?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -546,6 +568,7 @@ export type ProgramCreateWithoutModulesInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -561,6 +584,7 @@ export type ProgramUncheckedCreateWithoutModulesInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -592,6 +616,7 @@ export type ProgramUpdateWithoutModulesInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -607,6 +632,7 @@ export type ProgramUncheckedUpdateWithoutModulesInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -622,6 +648,7 @@ export type ProgramCreateWithoutEnrollmentsInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -637,6 +664,7 @@ export type ProgramUncheckedCreateWithoutEnrollmentsInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -668,6 +696,7 @@ export type ProgramUpdateWithoutEnrollmentsInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -683,6 +712,7 @@ export type ProgramUncheckedUpdateWithoutEnrollmentsInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -698,6 +728,7 @@ export type ProgramCreateWithoutCompletionRecordsInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -713,6 +744,7 @@ export type ProgramUncheckedCreateWithoutCompletionRecordsInput = {
   shortDescription: string
   description?: string | null
   thumbnailUrl?: string | null
+  materialUrl?: string | null
   isPublished?: boolean
   order?: number
   createdAt?: Date | string
@@ -744,6 +776,7 @@ export type ProgramUpdateWithoutCompletionRecordsInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -759,6 +792,7 @@ export type ProgramUncheckedUpdateWithoutCompletionRecordsInput = {
   shortDescription?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  materialUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -823,6 +857,7 @@ export type ProgramSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   shortDescription?: boolean
   description?: boolean
   thumbnailUrl?: boolean
+  materialUrl?: boolean
   isPublished?: boolean
   order?: boolean
   createdAt?: boolean
@@ -840,6 +875,7 @@ export type ProgramSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   shortDescription?: boolean
   description?: boolean
   thumbnailUrl?: boolean
+  materialUrl?: boolean
   isPublished?: boolean
   order?: boolean
   createdAt?: boolean
@@ -853,6 +889,7 @@ export type ProgramSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   shortDescription?: boolean
   description?: boolean
   thumbnailUrl?: boolean
+  materialUrl?: boolean
   isPublished?: boolean
   order?: boolean
   createdAt?: boolean
@@ -866,13 +903,14 @@ export type ProgramSelectScalar = {
   shortDescription?: boolean
   description?: boolean
   thumbnailUrl?: boolean
+  materialUrl?: boolean
   isPublished?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProgramOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "shortDescription" | "description" | "thumbnailUrl" | "isPublished" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["program"]>
+export type ProgramOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "shortDescription" | "description" | "thumbnailUrl" | "materialUrl" | "isPublished" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["program"]>
 export type ProgramInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   modules?: boolean | Prisma.Program$modulesArgs<ExtArgs>
   enrollments?: boolean | Prisma.Program$enrollmentsArgs<ExtArgs>
@@ -896,6 +934,7 @@ export type $ProgramPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     shortDescription: string
     description: string | null
     thumbnailUrl: string | null
+    materialUrl: string | null
     isPublished: boolean
     order: number
     createdAt: Date
@@ -1332,6 +1371,7 @@ export interface ProgramFieldRefs {
   readonly shortDescription: Prisma.FieldRef<"Program", 'String'>
   readonly description: Prisma.FieldRef<"Program", 'String'>
   readonly thumbnailUrl: Prisma.FieldRef<"Program", 'String'>
+  readonly materialUrl: Prisma.FieldRef<"Program", 'String'>
   readonly isPublished: Prisma.FieldRef<"Program", 'Boolean'>
   readonly order: Prisma.FieldRef<"Program", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Program", 'DateTime'>

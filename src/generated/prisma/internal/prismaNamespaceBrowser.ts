@@ -107,6 +107,7 @@ export const ProgramScalarFieldEnum = {
   shortDescription: 'shortDescription',
   description: 'description',
   thumbnailUrl: 'thumbnailUrl',
+  materialUrl: 'materialUrl',
   isPublished: 'isPublished',
   order: 'order',
   createdAt: 'createdAt',

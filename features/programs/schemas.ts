@@ -9,6 +9,7 @@ export const programSchema = z.object({
   shortDescription: z.string().min(1, "Deskripsi singkat wajib diisi").max(300),
   description: z.string().optional(),
   thumbnailUrl: z.string().url("URL thumbnail tidak valid").or(z.literal("")).optional(),
+  materialUrl: z.string().url("URL materi tidak valid").or(z.literal("")).optional(),
   isPublished: z.boolean().optional(),
   order: z.coerce.number().int().min(0).default(0),
 });

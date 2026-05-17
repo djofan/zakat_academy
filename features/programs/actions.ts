@@ -13,17 +13,19 @@ export async function createProgram(values: ProgramFormValues) {
     throw new Error("Unauthorized");
   }
 
+  //createProgram
   const program = await db.program.create({
-    data: {
-      title: values.title,
-      slug: values.slug,
-      shortDescription: values.shortDescription,
-      description: values.description ?? null,
-      thumbnailUrl: values.thumbnailUrl || null,
-      isPublished: values.isPublished ?? false,
-      order: values.order,
-    },
-  });
+  data: {
+    title: values.title,
+    slug: values.slug,
+    shortDescription: values.shortDescription,
+    description: values.description ?? null,
+    thumbnailUrl: values.thumbnailUrl || null,
+    materialUrl: values.materialUrl || null,  // ← tambah ini
+    isPublished: values.isPublished ?? false,
+    order: values.order,
+  },
+});
 
   revalidatePath("/admin/programs");
   revalidatePath("/programs");
@@ -36,18 +38,20 @@ export async function updateProgram(id: string, values: ProgramFormValues) {
     throw new Error("Unauthorized");
   }
 
+  //updateProgram
   const program = await db.program.update({
-    where: { id },
-    data: {
-      title: values.title,
-      slug: values.slug,
-      shortDescription: values.shortDescription,
-      description: values.description ?? null,
-      thumbnailUrl: values.thumbnailUrl || null,
-      isPublished: values.isPublished ?? false,
-      order: values.order,
-    },
-  });
+  where: { id },
+  data: {
+    title: values.title,
+    slug: values.slug,
+    shortDescription: values.shortDescription,
+    description: values.description ?? null,
+    thumbnailUrl: values.thumbnailUrl || null,
+    materialUrl: values.materialUrl || null,  // ← tambah ini
+    isPublished: values.isPublished ?? false,
+    order: values.order,
+  },
+});
 
   revalidatePath("/admin/programs");
   revalidatePath("/programs");
