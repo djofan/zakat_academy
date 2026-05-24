@@ -94,122 +94,137 @@ export function QuizTable({
   }
 
   const columns: ColumnDef<QuizRow>[] = [
-    {
-      accessorKey: "title",
-      header: "Judul Kuis",
-      cell: ({ row }) => (
-        <div>
-          <p className="font-medium">{row.original.title}</p>
-          <p className="text-xs text-muted-foreground">
-            {row.original.module.program.title} &rsaquo; {row.original.module.title}
-          </p>
+  {
+    accessorKey: "title",
+    header: "Judul Kuis",
+    cell: ({ row }) => (
+      <div>
+        <p className="font-medium">{row.original.title}</p>
+        <p className="text-xs text-muted-foreground">
+          {row.original.module.program.title} &rsaquo; {row.original.module.title}
+        </p>
+        {/* Info tambahan di mobile */}
+        <div className="mt-1 flex flex-wrap gap-1 md:hidden">
+          {row.original.isActive ? (
+            <Badge className="bg-green-100 text-green-800 text-xs hover:bg-green-100">Aktif</Badge>
+          ) : (
+            <Badge variant="secondary" className="text-xs">Nonaktif</Badge>
+          )}
+          <span className="text-xs text-muted-foreground">{row.original.timeLimitMinutes} menit</span>
+          <span className="text-xs text-muted-foreground">{row.original.questions.length} soal</span>
         </div>
-      ),
-    },
-    {
-      accessorKey: "isActive",
-      header: "Status",
-      cell: ({ row }) => (
-        row.original.isActive ? (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Aktif</Badge>
-        ) : (
-          <Badge variant="secondary">Nonaktif</Badge>
-        )
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: "quizDate",
-      header: "Jadwal",
-      cell: ({ row }) => {
-        const d = row.original.quizDate;
-        return d ? (
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Calendar className="h-3.5 w-3.5" />
-            {new Date(d).toLocaleString("id-ID", {
-  day: "2-digit", month: "short", year: "numeric",
-  hour: "2-digit", minute: "2-digit",
-  timeZone: "Asia/Jakarta",
-})}
-          </div>
-        ) : (
-          <span className="text-xs text-muted-foreground">Tanpa jadwal</span>
-        );
-      },
-      enableSorting: false,
-    },
-    {
-      accessorKey: "timeLimitMinutes",
-      header: "Waktu",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1 text-sm">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          {row.original.timeLimitMinutes} menit
+      </div>
+    ),
+  },
+  {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => (
+      row.original.isActive ? (
+        <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Aktif</Badge>
+      ) : (
+        <Badge variant="secondary">Nonaktif</Badge>
+      )
+    ),
+    enableSorting: false,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "quizDate",
+    header: "Jadwal",
+    cell: ({ row }) => {
+      const d = row.original.quizDate;
+      return d ? (
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <Calendar className="h-3.5 w-3.5" />
+          {new Date(d).toLocaleString("id-ID", {
+            day: "2-digit", month: "short", year: "numeric",
+            hour: "2-digit", minute: "2-digit",
+            timeZone: "Asia/Jakarta",
+          })}
         </div>
-      ),
-      enableSorting: false,
+      ) : (
+        <span className="text-xs text-muted-foreground">Tanpa jadwal</span>
+      );
     },
-    {
-      accessorKey: "allowRetake",
-      header: "Retake",
-      cell: ({ row }) => (
-        row.original.allowRetake ? (
-          <Badge variant="outline" className="text-xs">
-            <RotateCcw className="mr-1 h-3 w-3" />Izin
-          </Badge>
-        ) : (
-          <span className="text-xs text-muted-foreground">1x saja</span>
-        )
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: "questions",
-      header: "Soal",
-      cell: ({ row }) => (
-        <span className="tabular-nums">{row.original.questions.length}</span>
-      ),
-      enableSorting: false,
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1">
-          <Button
-            variant={row.original.isActive ? "ghost" : "outline"}
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={() => handleToggle(row.original)}
-            disabled={toggling}
-            title={row.original.isActive ? "Nonaktifkan" : "Aktifkan"}
-          >
-            {row.original.isActive ? (
-              <PowerOff className="h-4 w-4 text-green-600" />
-            ) : (
-              <PowerIcon className="h-4 w-4 text-muted-foreground" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={() => handleEdit(row.original)}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-            onClick={() => handleDelete(row.original)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-      enableSorting: false,
-    },
-  ];
+    enableSorting: false,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "timeLimitMinutes",
+    header: "Waktu",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-1 text-sm">
+        <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+        {row.original.timeLimitMinutes} menit
+      </div>
+    ),
+    enableSorting: false,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "allowRetake",
+    header: "Retake",
+    cell: ({ row }) => (
+      row.original.allowRetake ? (
+        <Badge variant="outline" className="text-xs">
+          <RotateCcw className="mr-1 h-3 w-3" />Izin
+        </Badge>
+      ) : (
+        <span className="text-xs text-muted-foreground">1x saja</span>
+      )
+    ),
+    enableSorting: false,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "questions",
+    header: "Soal",
+    cell: ({ row }) => (
+      <span className="tabular-nums">{row.original.questions.length}</span>
+    ),
+    enableSorting: false,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-1">
+        <Button
+          variant={row.original.isActive ? "ghost" : "outline"}
+          size="sm"
+          className="h-8 w-8 p-0"
+          onClick={() => handleToggle(row.original)}
+          disabled={toggling}
+          title={row.original.isActive ? "Nonaktifkan" : "Aktifkan"}
+        >
+          {row.original.isActive ? (
+            <PowerOff className="h-4 w-4 text-green-600" />
+          ) : (
+            <PowerIcon className="h-4 w-4 text-muted-foreground" />
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
+          onClick={() => handleEdit(row.original)}
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+          onClick={() => handleDelete(row.original)}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    ),
+    enableSorting: false,
+  },
+];
 
   return (
     <>

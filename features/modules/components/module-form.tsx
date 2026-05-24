@@ -85,7 +85,7 @@ export function ModuleForm({ module, programs, open, onOpenChange }: ModuleFormP
       }
       toast.success("Modul berhasil disimpan");
       onOpenChange(false);
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gagal menyimpan modul");
     }

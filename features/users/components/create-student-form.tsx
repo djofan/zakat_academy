@@ -103,7 +103,7 @@ export function CreateStudentForm({ lastNisIkhwan, lastNisAkhwat }: CreateStuden
           Tambah Peserta
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="w-full sm:max-w-md p-2">
         <SheetHeader>
           <SheetTitle>Tambah Peserta Baru</SheetTitle>
         </SheetHeader>

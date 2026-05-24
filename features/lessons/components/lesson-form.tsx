@@ -166,7 +166,7 @@ export function LessonForm({ lesson, modules, open, onOpenChange }: LessonFormPr
         }
         toast.success("Lesson berhasil disimpan");
         onOpenChange(false);
-        router.refresh();
+        window.location.reload();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Gagal menyimpan lesson");
       }
