@@ -141,66 +141,81 @@ export function useProgramColumns(onEdit: (program: ProgramRow) => void) {
   }
 
   const columns: ColumnDef<ProgramRow>[] = [
-    {
-      accessorKey: "title",
-      header: "Judul",
-      cell: ({ row }) => (
-        <div className="max-w-[240px]">
-          <p className="font-medium truncate">{row.original.title}</p>
-          <p className="text-xs text-muted-foreground truncate">
-            {row.original.shortDescription}
-          </p>
+  {
+    accessorKey: "title",
+    header: "Judul",
+    cell: ({ row }) => (
+      <div className="max-w-[240px]">
+        <p className="font-medium truncate">{row.original.title}</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {row.original.shortDescription}
+        </p>
+        {/* Info ringkas di mobile */}
+        <div className="mt-1 flex flex-wrap gap-1 md:hidden">
+          <Badge variant={row.original.isPublished ? "default" : "secondary"} className="text-xs">
+            {row.original.isPublished ? "Dipublikasi" : "Draft"}
+          </Badge>
+          <span className="text-xs text-muted-foreground">
+            {row.original._count.modules} modul · {row.original._count.lessons} lesson
+          </span>
         </div>
-      ),
-    },
-    {
-      accessorKey: "isPublished",
-      header: "Status",
-      cell: ({ row }) => (
-        <Badge variant={row.original.isPublished ? "default" : "secondary"}>
-          {row.original.isPublished ? "Dipublikasi" : "Draft"}
-        </Badge>
-      ),
-    },
-    {
-      accessorKey: "_count.modules",
-      header: "Modul",
-      cell: ({ row }) => (
-        <span className="text-sm">{row.original._count.modules}</span>
-      ),
-    },
-    {
-      accessorKey: "_count.lessons",
-      header: "Lesson",
-      cell: ({ row }) => (
-        <span className="text-sm tabular-nums">{row.original._count.lessons}</span>
-      ),
-    },
-    {
-      accessorKey: "_count.enrollments",
-      header: "Pendaftaran",
-      cell: ({ row }) => (
-        <span className="text-sm tabular-nums">{row.original._count.enrollments}</span>
-      ),
-    },
-    {
-      accessorKey: "order",
-      header: "Urutan",
-      cell: ({ row }) => (
-        <span className="tabular-nums">{row.original.order}</span>
-      ),
-    },
-    {
-      accessorKey: "isPublished.toggle",
-      header: "Publikasi",
-      cell: ({ row }) => <PublishSwitch row={row.original} />,
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => <ActionCell row={row.original} />,
-      enableSorting: false,
-    },
-  ];
+      </div>
+    ),
+  },
+  {
+    accessorKey: "isPublished",
+    header: "Status",
+    cell: ({ row }) => (
+      <Badge variant={row.original.isPublished ? "default" : "secondary"}>
+        {row.original.isPublished ? "Dipublikasi" : "Draft"}
+      </Badge>
+    ),
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "_count.modules",
+    header: "Modul",
+    cell: ({ row }) => (
+      <span className="text-sm">{row.original._count.modules}</span>
+    ),
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "_count.lessons",
+    header: "Lesson",
+    cell: ({ row }) => (
+      <span className="text-sm tabular-nums">{row.original._count.lessons}</span>
+    ),
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "_count.enrollments",
+    header: "Pendaftaran",
+    cell: ({ row }) => (
+      <span className="text-sm tabular-nums">{row.original._count.enrollments}</span>
+    ),
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "order",
+    header: "Urutan",
+    cell: ({ row }) => (
+      <span className="tabular-nums">{row.original.order}</span>
+    ),
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    accessorKey: "isPublished.toggle",
+    header: "Publikasi",
+    cell: ({ row }) => <PublishSwitch row={row.original} />,
+    meta: { className: "hidden md:table-cell" },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <ActionCell row={row.original} />,
+    enableSorting: false,
+  },
+];
 
   return columns;
 }
